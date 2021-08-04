@@ -1,2 +1,2 @@
 # cookbook_api
-Api desenvolvida em golang para sistema para criação de receitas
+API desenvolvida em GoLang para sistema de cadastro de receitas
