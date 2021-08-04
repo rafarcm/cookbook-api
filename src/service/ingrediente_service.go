@@ -39,11 +39,6 @@ func (i ingredienteService) WithTrx(trxHandle *gorm.DB) ingredienteService {
 func (i ingredienteService) Save(ingrediente model.Ingrediente) (model.Ingrediente, error) {
 	ingrediente.CriadoEm = time.Now()
 	ingrediente.AtualizadoEm = ingrediente.CriadoEm
-
-	for idx := range ingrediente.Precos {
-		ingrediente.Precos[idx].CriadoEm = ingrediente.CriadoEm
-	}
-
 	return i.ingredienteRepository.Save(ingrediente)
 }
 

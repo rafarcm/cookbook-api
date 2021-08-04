@@ -28,6 +28,7 @@ var _ = Describe("IngredienteRepository", func() {
 		err                  error
 		ingredienteID        uint64
 		descricaoIngrediente string
+		precoIngrediente     float64 = 10
 	)
 
 	BeforeEach(func() {
@@ -48,19 +49,16 @@ var _ = Describe("IngredienteRepository", func() {
 				ingrediente1 := model.Ingrediente{
 					Descricao:     descricaoIngrediente,
 					UnidadeMedida: constants.Quilograma,
+					Preco:         precoIngrediente,
 					CriadoEm:      time.Now(),
 					AtualizadoEm:  time.Now(),
-					Precos: []model.PrecoIngrediente{{
-						Preco:    10,
-						CriadoEm: time.Now(),
-					}},
 				}
 				ingrediente, err = ingredienteRepo.Save(ingrediente1)
 				Expect(err).To(BeNil())
 				Expect(ingrediente.ID).NotTo(BeNil())
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
 				Expect(ingrediente.UnidadeMedida).To(Equal(constants.Quilograma))
-				Expect(len(ingrediente.Precos)).To(Equal(1))
+				Expect(ingrediente.Preco).To(Equal(precoIngrediente))
 			})
 		})
 	})
@@ -72,12 +70,9 @@ var _ = Describe("IngredienteRepository", func() {
 				ingrediente1 := model.Ingrediente{
 					Descricao:     descricaoIngrediente,
 					UnidadeMedida: constants.Quilograma,
+					Preco:         precoIngrediente,
 					CriadoEm:      time.Now(),
 					AtualizadoEm:  time.Now(),
-					Precos: []model.PrecoIngrediente{{
-						Preco:    10,
-						CriadoEm: time.Now(),
-					}},
 				}
 				err = tx.Create(&ingrediente1).Error
 				Expect(err).To(BeNil())
@@ -101,12 +96,9 @@ var _ = Describe("IngredienteRepository", func() {
 				ingrediente1 := model.Ingrediente{
 					Descricao:     descricaoIngrediente,
 					UnidadeMedida: constants.Quilograma,
+					Preco:         precoIngrediente,
 					CriadoEm:      time.Now(),
 					AtualizadoEm:  time.Now(),
-					Precos: []model.PrecoIngrediente{{
-						Preco:    10,
-						CriadoEm: time.Now(),
-					}},
 				}
 				err = tx.Create(&ingrediente1).Error
 				Expect(err).To(BeNil())
@@ -128,10 +120,10 @@ var _ = Describe("IngredienteRepository", func() {
 
 			It("não retorna nunhum ingrediente", func() {
 				ingrediente, err = ingredienteRepo.FindById(ingredienteID)
-				Expect(err).To(Equal(gorm.ErrRecordNotFound))
+				Expect(ingrediente.ID).To(Equal(0))
 				Expect(ingrediente.Descricao).To(Equal(""))
 				Expect(ingrediente.UnidadeMedida).To(Equal(""))
-				Expect(ingrediente.Precos).To(BeNil())
+				Expect(ingrediente.Preco).To(Equal(0))
 			})
 		})
 
@@ -141,12 +133,9 @@ var _ = Describe("IngredienteRepository", func() {
 				ingrediente1 := model.Ingrediente{
 					Descricao:     descricaoIngrediente,
 					UnidadeMedida: constants.Quilograma,
+					Preco:         precoIngrediente,
 					CriadoEm:      time.Now(),
 					AtualizadoEm:  time.Now(),
-					Precos: []model.PrecoIngrediente{{
-						Preco:    10,
-						CriadoEm: time.Now(),
-					}},
 				}
 				err = tx.Create(&ingrediente1).Error
 				Expect(err).To(BeNil())
@@ -158,7 +147,7 @@ var _ = Describe("IngredienteRepository", func() {
 				Expect(err).To(BeNil())
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
 				Expect(ingrediente.UnidadeMedida).To(Equal(constants.Quilograma))
-				Expect(len(ingrediente.Precos)).To(Equal(1))
+				Expect(ingrediente.Preco).To(Equal(precoIngrediente))
 			})
 		})
 	})
@@ -178,12 +167,9 @@ var _ = Describe("IngredienteRepository", func() {
 				ingrediente1 := model.Ingrediente{
 					Descricao:     descricaoIngrediente,
 					UnidadeMedida: constants.Quilograma,
+					Preco:         precoIngrediente,
 					CriadoEm:      time.Now(),
 					AtualizadoEm:  time.Now(),
-					Precos: []model.PrecoIngrediente{{
-						Preco:    10,
-						CriadoEm: time.Now(),
-					}},
 				}
 				err = tx.Create(&ingrediente1).Error
 				Expect(err).To(BeNil())

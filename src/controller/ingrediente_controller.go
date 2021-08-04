@@ -68,7 +68,7 @@ func (i ingredienteController) UpdateIngrediente(c *gin.Context) {
 	}
 
 	ingrediente, erro = i.ingredienteService.Update(ingredienteID, ingrediente)
-	if erro != nil && !errors.Is(erro, gorm.ErrRecordNotFound) {
+	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar o ingrediente"})
 		return
 	}
@@ -87,7 +87,7 @@ func (i ingredienteController) DeleteIngrediente(c *gin.Context) {
 	}
 
 	erro = i.ingredienteService.Delete(ingredienteID)
-	if erro != nil && !errors.Is(erro, gorm.ErrRecordNotFound) {
+	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar o ingrediente"})
 		return
 	}

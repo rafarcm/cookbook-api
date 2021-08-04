@@ -2,6 +2,7 @@ package repository
 
 import (
 	"cookbook/src/model"
+	"errors"
 	"fmt"
 	"log"
 
@@ -33,7 +34,7 @@ func NewIngredienteRepository(db *gorm.DB) ingredienteRepository {
 // Migrate : Irá criar a tabela de Ingrediente no banco de dados
 func (i ingredienteRepository) Migrate() error {
 	log.Print("[IngredienteRepository]...Migrate")
-	return i.DB.AutoMigrate(&model.Ingrediente{}, &model.PrecoIngrediente{})
+	return i.DB.AutoMigrate(&model.Ingrediente{})
 }
 
 // WithTrx : Inicia uma transação para a ação que sera utilizada
@@ -78,7 +79,11 @@ func (i ingredienteRepository) Delete(id uint64) error {
 func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...FindById")
 
-	erro = i.DB.Preload("Precos").Where("id = ?", id).First(&ingrediente).Error
+	erro = i.DB.Where("id = ?", id).First(&ingrediente).Error
+
+	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
+		return ingrediente, nil
+	}
 
 	return ingrediente, erro
 }
@@ -88,7 +93,7 @@ func (i ingredienteRepository) GetAll(descricao string) (ingredientes []model.In
 	log.Print("[IngredienteRepository]...GetAll")
 
 	descricaoBusca := fmt.Sprintf("%%%s%%", descricao)
-	erro = i.DB.Preload("Precos").Where("descricao LIKE ?", descricaoBusca).Find(&ingredientes).Error
+	erro = i.DB.Where("descricao LIKE ?", descricaoBusca).Find(&ingredientes).Error
 
 	return ingredientes, erro
 }
