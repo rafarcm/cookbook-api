@@ -3,7 +3,6 @@ package controller
 import (
 	"cookbook/src/model"
 	"cookbook/src/service"
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -36,13 +35,15 @@ func NewIngredienteController(s service.IngredienteService) IngredienteControlle
 func (i ingredienteController) AddIngrediente(c *gin.Context) {
 	log.Print("[IngredienteController]...Adicionando ingrediente")
 
+	txHandle := c.MustGet("db_trx").(*gorm.DB)
+
 	var ingrediente model.Ingrediente
 	if erro := c.ShouldBindJSON(&ingrediente); erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": erro.Error()})
 		return
 	}
 
-	ingrediente, erro := i.ingredienteService.Save(ingrediente)
+	ingrediente, erro := i.ingredienteService.WithTrx(txHandle).Save(ingrediente)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao adicionar ingrediente"})
 		return
@@ -55,6 +56,8 @@ func (i ingredienteController) AddIngrediente(c *gin.Context) {
 func (i ingredienteController) UpdateIngrediente(c *gin.Context) {
 	log.Print("[IngredienteController]...Atualizando ingrediente")
 
+	txHandle := c.MustGet("db_trx").(*gorm.DB)
+
 	ingredienteID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	if erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": erro.Error()})
@@ -67,7 +70,7 @@ func (i ingredienteController) UpdateIngrediente(c *gin.Context) {
 		return
 	}
 
-	ingrediente, erro = i.ingredienteService.Update(ingredienteID, ingrediente)
+	ingrediente, erro = i.ingredienteService.WithTrx(txHandle).Update(ingredienteID, ingrediente)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar o ingrediente"})
 		return
@@ -80,13 +83,15 @@ func (i ingredienteController) UpdateIngrediente(c *gin.Context) {
 func (i ingredienteController) DeleteIngrediente(c *gin.Context) {
 	log.Print("[IngredienteController]...Deletando ingrediente")
 
+	txHandle := c.MustGet("db_trx").(*gorm.DB)
+
 	ingredienteID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	if erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": erro.Error()})
 		return
 	}
 
-	erro = i.ingredienteService.Delete(ingredienteID)
+	erro = i.ingredienteService.WithTrx(txHandle).Delete(ingredienteID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar o ingrediente"})
 		return
@@ -106,8 +111,8 @@ func (i ingredienteController) FindIngredienteById(c *gin.Context) {
 	}
 
 	ingrediente, erro := i.ingredienteService.FindById(ingredienteID)
-	if erro != nil && !errors.Is(erro, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar o ingrediente pelo id"})
+	if erro != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar o ingrediente"})
 		return
 	}
 
@@ -121,7 +126,7 @@ func (i ingredienteController) GetAllIngredientes(c *gin.Context) {
 	descricao := c.Query("descricao")
 
 	ingredientes, erro := i.ingredienteService.GetAll(descricao)
-	if erro != nil && !errors.Is(erro, gorm.ErrRecordNotFound) {
+	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar os ingredientes"})
 		return
 	}

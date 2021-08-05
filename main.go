@@ -10,5 +10,4 @@ func main() {
 	config.Carregar()
 	db, _ := database.DBConnection()
 	route.SetupRoutes(db)
-
 }

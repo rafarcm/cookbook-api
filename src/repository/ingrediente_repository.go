@@ -16,7 +16,7 @@ type ingredienteRepository struct {
 // IngredienteRepository : Representa o contrato de ingredientes repository
 type IngredienteRepository interface {
 	Migrate() error
-	WithTrx(*gorm.DB) ingredienteRepository
+	WithTrx(*gorm.DB) IngredienteRepository
 	Save(model.Ingrediente) (model.Ingrediente, error)
 	Update(model.Ingrediente) (model.Ingrediente, error)
 	Delete(uint64) error
@@ -25,7 +25,7 @@ type IngredienteRepository interface {
 }
 
 // NewingredienteRepository -> retorna um novo ingrediente repository
-func NewIngredienteRepository(db *gorm.DB) ingredienteRepository {
+func NewIngredienteRepository(db *gorm.DB) IngredienteRepository {
 	return ingredienteRepository{
 		DB: db,
 	}
@@ -38,7 +38,7 @@ func (i ingredienteRepository) Migrate() error {
 }
 
 // WithTrx : Inicia uma transação para a ação que sera utilizada
-func (i ingredienteRepository) WithTrx(trxHandle *gorm.DB) ingredienteRepository {
+func (i ingredienteRepository) WithTrx(trxHandle *gorm.DB) IngredienteRepository {
 	if trxHandle == nil {
 		log.Print("Transaction Database not found")
 		return i

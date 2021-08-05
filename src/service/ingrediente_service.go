@@ -14,7 +14,7 @@ type ingredienteService struct {
 
 // IngredienteService : Representa o contrato de ingredientes service
 type IngredienteService interface {
-	WithTrx(*gorm.DB) ingredienteService
+	WithTrx(*gorm.DB) IngredienteService
 	Save(model.Ingrediente) (model.Ingrediente, error)
 	Update(uint64, model.Ingrediente) (model.Ingrediente, error)
 	Delete(uint64) error
@@ -30,7 +30,7 @@ func NewIngredienteService(r repository.IngredienteRepository) IngredienteServic
 }
 
 // WithTrx : Habilita repositório com transação
-func (i ingredienteService) WithTrx(trxHandle *gorm.DB) ingredienteService {
+func (i ingredienteService) WithTrx(trxHandle *gorm.DB) IngredienteService {
 	i.ingredienteRepository = i.ingredienteRepository.WithTrx(trxHandle)
 	return i
 }
@@ -39,6 +39,7 @@ func (i ingredienteService) WithTrx(trxHandle *gorm.DB) ingredienteService {
 func (i ingredienteService) Save(ingrediente model.Ingrediente) (model.Ingrediente, error) {
 	ingrediente.CriadoEm = time.Now()
 	ingrediente.AtualizadoEm = ingrediente.CriadoEm
+
 	return i.ingredienteRepository.Save(ingrediente)
 }
 

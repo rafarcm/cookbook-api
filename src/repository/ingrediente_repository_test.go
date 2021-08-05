@@ -119,11 +119,9 @@ var _ = Describe("IngredienteRepository", func() {
 			})
 
 			It("não retorna nunhum ingrediente", func() {
-				ingrediente, err = ingredienteRepo.FindById(ingredienteID)
-				Expect(ingrediente.ID).To(Equal(0))
+				ingrediente, _ = ingredienteRepo.FindById(ingredienteID)
 				Expect(ingrediente.Descricao).To(Equal(""))
 				Expect(ingrediente.UnidadeMedida).To(Equal(""))
-				Expect(ingrediente.Preco).To(Equal(0))
 			})
 		})
 
