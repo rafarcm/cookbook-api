@@ -1,0 +1,22 @@
+mode: set
+cookbook/src/service/ingrediente_service.go:26.83,30.2 1 1
+cookbook/src/service/ingrediente_service.go:33.76,36.2 2 1
+cookbook/src/service/ingrediente_service.go:39.92,44.2 3 1
+cookbook/src/service/ingrediente_service.go:47.105,50.17 2 1
+cookbook/src/service/ingrediente_service.go:54.2,58.57 4 1
+cookbook/src/service/ingrediente_service.go:50.17,52.3 1 1
+cookbook/src/service/ingrediente_service.go:62.53,64.2 1 1
+cookbook/src/service/ingrediente_service.go:67.76,69.2 1 1
+cookbook/src/service/ingrediente_service.go:72.83,74.2 1 1
+cookbook/src/repository/ingrediente_repository.go:28.66,32.2 1 1
+cookbook/src/repository/ingrediente_repository.go:35.48,38.2 2 0
+cookbook/src/repository/ingrediente_repository.go:41.82,42.22 1 1
+cookbook/src/repository/ingrediente_repository.go:46.2,48.10 2 1
+cookbook/src/repository/ingrediente_repository.go:42.22,45.3 2 1
+cookbook/src/repository/ingrediente_repository.go:52.95,58.2 3 1
+cookbook/src/repository/ingrediente_repository.go:61.97,67.2 3 1
+cookbook/src/repository/ingrediente_repository.go:70.56,76.2 3 1
+cookbook/src/repository/ingrediente_repository.go:79.96,84.60 3 1
+cookbook/src/repository/ingrediente_repository.go:88.2,88.26 1 1
+cookbook/src/repository/ingrediente_repository.go:84.60,86.3 1 1
+cookbook/src/repository/ingrediente_repository.go:92.104,99.2 4 1

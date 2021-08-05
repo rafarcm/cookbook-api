@@ -120,8 +120,7 @@ var _ = Describe("IngredienteRepository", func() {
 
 			It("não retorna nunhum ingrediente", func() {
 				ingrediente, _ = ingredienteRepo.FindById(ingredienteID)
-				Expect(ingrediente.Descricao).To(Equal(""))
-				Expect(ingrediente.UnidadeMedida).To(Equal(""))
+				Expect(ingrediente).To(Equal(model.Ingrediente{}))
 			})
 		})
 
@@ -179,6 +178,20 @@ var _ = Describe("IngredienteRepository", func() {
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(1))
 				Expect(ingredientes[0].Descricao).To(Equal(descricaoIngrediente))
+			})
+		})
+	})
+
+	Describe("WithTrx", func() {
+		Describe("vai retornar um repository com transação", func() {
+			It("retorna o service com transacao", func() {
+				ingredienteRepo.WithTrx(tx)
+			})
+		})
+
+		Describe("vai retornar um repository sem transação", func() {
+			It("retorna o service com transacao", func() {
+				ingredienteRepo.WithTrx(nil)
 			})
 		})
 	})
