@@ -80,20 +80,6 @@ func (mr *MockIngredienteRepositoryMockRecorder) GetAll(arg0 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIngredienteRepository)(nil).GetAll), arg0)
 }
 
-// Migrate mocks base method.
-func (m *MockIngredienteRepository) Migrate() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Migrate")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Migrate indicates an expected call of Migrate.
-func (mr *MockIngredienteRepositoryMockRecorder) Migrate() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Migrate", reflect.TypeOf((*MockIngredienteRepository)(nil).Migrate))
-}
-
 // Save mocks base method.
 func (m *MockIngredienteRepository) Save(arg0 model.Ingrediente) (model.Ingrediente, error) {
 	m.ctrl.T.Helper()

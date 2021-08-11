@@ -16,6 +16,8 @@ func SetupRoutes(db *gorm.DB) {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("unidademedidavalidation", validators.UnidadeMedidaValidation)
 	}
+
 	httpRouter = routes.GetIngredienteRoute(db, httpRouter)
+	httpRouter = routes.GetReceitaRoute(db, httpRouter)
 	httpRouter.Run()
 }

@@ -5,7 +5,6 @@ import (
 	"cookbook/src/middleware"
 	"cookbook/src/repository"
 	"cookbook/src/service"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -15,13 +14,7 @@ import (
 func GetIngredienteRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 
 	ingredienteRepository := repository.NewIngredienteRepository(db)
-
-	if erro := ingredienteRepository.Migrate(); erro != nil {
-		log.Fatal("Ingrediente migrate erro", erro)
-	}
-
 	ingredienteService := service.NewIngredienteService(ingredienteRepository)
-
 	ingredienteController := controller.NewIngredienteController(ingredienteService)
 
 	ingredientes := httpRouter.Group("ingredientes")

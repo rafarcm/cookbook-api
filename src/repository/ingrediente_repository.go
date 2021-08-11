@@ -15,7 +15,6 @@ type ingredienteRepository struct {
 
 // IngredienteRepository : Representa o contrato de ingredientes repository
 type IngredienteRepository interface {
-	Migrate() error
 	WithTrx(*gorm.DB) IngredienteRepository
 	Save(model.Ingrediente) (model.Ingrediente, error)
 	Update(model.Ingrediente) (model.Ingrediente, error)
@@ -31,13 +30,7 @@ func NewIngredienteRepository(db *gorm.DB) IngredienteRepository {
 	}
 }
 
-// Migrate : Irá criar a tabela de Ingrediente no banco de dados
-func (i ingredienteRepository) Migrate() error {
-	log.Print("[IngredienteRepository]...Migrate")
-	return i.DB.AutoMigrate(&model.Ingrediente{})
-}
-
-// WithTrx : Inicia uma transação para a ação que sera utilizada
+// WithTrx : inicia uma transação para a ação que sera utilizada
 func (i ingredienteRepository) WithTrx(trxHandle *gorm.DB) IngredienteRepository {
 	if trxHandle == nil {
 		log.Print("Transaction Database not found")
@@ -48,7 +41,7 @@ func (i ingredienteRepository) WithTrx(trxHandle *gorm.DB) IngredienteRepository
 	return i
 }
 
-// Save : Salva um novo ingrediente no banco de dados
+// Save -> salva um novo ingrediente no banco de dados
 func (i ingredienteRepository) Save(ingrediente model.Ingrediente) (model.Ingrediente, error) {
 	log.Print("[IngredienteRepository]...Save")
 
@@ -57,7 +50,7 @@ func (i ingredienteRepository) Save(ingrediente model.Ingrediente) (model.Ingred
 	return ingrediente, erro
 }
 
-// Update : Atualiza um ingrediente no banco de dados
+// Update -> atualiza um ingrediente no banco de dados
 func (i ingredienteRepository) Update(ingrediente model.Ingrediente) (model.Ingrediente, error) {
 	log.Print("[IngredienteRepository]...Update")
 
@@ -66,7 +59,7 @@ func (i ingredienteRepository) Update(ingrediente model.Ingrediente) (model.Ingr
 	return ingrediente, erro
 }
 
-// Delete : Deleta um ingrediente no banco de dados
+// Delete : deleta um ingrediente no banco de dados
 func (i ingredienteRepository) Delete(id uint64) error {
 	log.Print("[IngredienteRepository]...Delete")
 
@@ -75,7 +68,7 @@ func (i ingredienteRepository) Delete(id uint64) error {
 	return erro
 }
 
-// FindById : Busca um ingrediente pelo id no banco de dados
+// FindById -> busca um ingrediente pelo id no banco de dados
 func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...FindById")
 
@@ -88,7 +81,7 @@ func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingredient
 	return ingrediente, erro
 }
 
-// GetAll : Busca os ingrediente no banco de dados que correspondem a descrição passada
+// GetAll -> busca os ingrediente no banco de dados que correspondem a descrição passada
 func (i ingredienteRepository) GetAll(descricao string) (ingredientes []model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...GetAll")
 

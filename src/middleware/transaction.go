@@ -33,7 +33,18 @@ func DBTransactionMiddleware(db *gorm.DB) gin.HandlerFunc {
 		c.Set("db_trx", txHandle)
 		c.Next()
 
-		if StatusInList(c.Writer.Status(), []int{http.StatusOK, http.StatusCreated}) {
+		if StatusInList(c.Writer.Status(),
+			[]int{
+				http.StatusOK,
+				http.StatusCreated,
+				http.StatusAccepted,
+				http.StatusNonAuthoritativeInfo,
+				http.StatusNoContent,
+				http.StatusResetContent,
+				http.StatusPartialContent,
+				http.StatusMultiStatus,
+				http.StatusAlreadyReported,
+				http.StatusIMUsed}) {
 			log.Print("committing transactions")
 			if erro := txHandle.Commit().Error; erro != nil {
 				log.Print("trx commit error: ", erro)

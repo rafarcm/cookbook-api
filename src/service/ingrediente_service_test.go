@@ -99,7 +99,8 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("retorna o registro atualizado com sucesso sem erro", func() {
-				ingrediente, err = ingredienteService.Update(ingredienteID, ingrediente)
+				ingrediente.ID = ingredienteID
+				ingrediente, err = ingredienteService.Update(ingrediente)
 				Expect(err).To(BeNil())
 				Expect(ingrediente.ID).NotTo(BeNil())
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
@@ -118,7 +119,8 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("retorna erro de registro não encontrado", func() {
-				ingrediente, err = ingredienteService.Update(ingredienteID, ingrediente)
+				ingrediente.ID = ingredienteID
+				ingrediente, err = ingredienteService.Update(ingrediente)
 				Expect(err).To(Equal(gorm.ErrRecordNotFound))
 				Expect(ingrediente).To(Equal(model.Ingrediente{}))
 			})

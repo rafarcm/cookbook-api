@@ -2,6 +2,7 @@ package database
 
 import (
 	"cookbook/src/config"
+	"cookbook/src/model"
 	"log"
 	"os"
 	"time"
@@ -25,4 +26,10 @@ func DBConnection() (*gorm.DB, error) {
 	url := config.StringConexaoBanco
 
 	return gorm.Open(mysql.Open(url), &gorm.Config{Logger: newLogger})
+}
+
+// Migrate : Irá criar as tabelas do sistema no banco de dados
+func Migrate(db *gorm.DB) error {
+	log.Print("[Criando as tabelas do sistema]")
+	return db.AutoMigrate(&model.Ingrediente{}, &model.Receita{}, &model.IngredienteReceita{})
 }
