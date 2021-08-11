@@ -2,7 +2,7 @@ package service_test
 
 import (
 	"cookbook/src/constants"
-	"cookbook/src/mock_repository"
+	mock "cookbook/src/mock/repository"
 	"cookbook/src/model"
 	"cookbook/src/repository"
 	"cookbook/src/service"
@@ -57,7 +57,7 @@ var _ = Describe("OrderService", func() {
 					AtualizadoEm:  time.Now(),
 				}
 
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().
 					Save(gomock.Any()).
 					Return(ingrediente, error(nil))
@@ -88,7 +88,7 @@ var _ = Describe("OrderService", func() {
 					AtualizadoEm:  time.Now(),
 				}
 
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().
 					FindById(gomock.Eq(ingredienteID)).
 					Return(ingrediente, error(nil))
@@ -110,7 +110,7 @@ var _ = Describe("OrderService", func() {
 
 		Describe("vai retornar erro ao tentar buscar o ingrediente com o id passado", func() {
 			BeforeEach(func() {
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().
 					FindById(gomock.Eq(ingredienteID)).
 					Return(model.Ingrediente{}, gorm.ErrRecordNotFound)
@@ -128,7 +128,7 @@ var _ = Describe("OrderService", func() {
 	Describe("Delete", func() {
 		Describe("vai deletar um registro existente no banco de dados", func() {
 			BeforeEach(func() {
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 
 				ingredienteRepoMock.EXPECT().
 					Delete(gomock.Eq(ingredienteID)).
@@ -146,7 +146,7 @@ var _ = Describe("OrderService", func() {
 	Describe("FindById", func() {
 		Describe("sem registros no banco de dados", func() {
 			BeforeEach(func() {
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().FindById(gomock.Eq(ingredienteID))
 				ingredienteRepo = ingredienteRepoMock
 			})
@@ -169,7 +169,7 @@ var _ = Describe("OrderService", func() {
 					AtualizadoEm:  time.Now(),
 				}
 
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().
 					FindById(gomock.Eq(ingredienteID)).
 					Return(ingrediente1, error(nil))
@@ -189,7 +189,7 @@ var _ = Describe("OrderService", func() {
 	Describe("GetAll", func() {
 		Describe("sem registros no banco de dados", func() {
 			BeforeEach(func() {
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().GetAll(gomock.Eq(""))
 				ingredienteRepo = ingredienteRepoMock
 			})
@@ -222,7 +222,7 @@ var _ = Describe("OrderService", func() {
 					AtualizadoEm:  time.Now(),
 				}
 
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 				ingredienteRepoMock.EXPECT().
 					GetAll(gomock.Eq(descricaoIngrediente)).
 					Return([]model.Ingrediente{ingrediente1, ingrediente2}, error(nil))
@@ -240,7 +240,7 @@ var _ = Describe("OrderService", func() {
 	Describe("WithTrx", func() {
 		Describe("vai retornar um service com transação", func() {
 			BeforeEach(func() {
-				ingredienteRepoMock := mock_repository.NewMockIngredienteRepository(ctrl)
+				ingredienteRepoMock := mock.NewMockIngredienteRepository(ctrl)
 
 				ingredienteRepoMock.EXPECT().
 					WithTrx(gomock.Any()).

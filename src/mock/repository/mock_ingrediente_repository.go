@@ -2,7 +2,7 @@
 // Source: src/repository/ingrediente_repository.go
 
 // Package mock_repository is a generated GoMock package.
-package mock_repository
+package mock
 
 import (
 	model "cookbook/src/model"
