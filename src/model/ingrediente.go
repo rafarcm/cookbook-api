@@ -9,6 +9,7 @@ type Ingrediente struct {
 	UnidadeMedida string               `json:"unidadeMedida,omitempty" binding:"required,unidademedidavalidation" gorm:"not null"`
 	Preco         float64              `json:"preco,omitempty" gorm:"not null"`
 	Receitas      []IngredienteReceita `json:"receitas,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	EmpresaID     uint64               `json:"empresa,omitempty" binding:"required" gorm:"not null"`
 	CriadoEm      time.Time            `json:"criadoEm" gorm:"not null"`
 	AtualizadoEm  time.Time            `json:"atualizadoEm" gorm:"not null"`
 }
