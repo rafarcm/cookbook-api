@@ -23,6 +23,6 @@ func GetReceitaRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 	receitas.PUT("/:id", middleware.DBTransactionMiddleware(db), receitaController.UpdateReceita)
 	receitas.DELETE("/:id", middleware.DBTransactionMiddleware(db), receitaController.DeleteReceita)
 	receitas.GET("/:id", receitaController.FindReceitaById)
-
+	receitas.GET("/", receitaController.GetAllReceitas)
 	return httpRouter
 }

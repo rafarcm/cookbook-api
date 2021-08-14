@@ -19,6 +19,7 @@ type ReceitaService interface {
 	Update(model.Receita) (model.Receita, error)
 	Delete(uint64) error
 	FindById(uint64) (model.Receita, error)
+	GetAll(model.Receita) ([]model.Receita, error)
 }
 
 // NewReceitaService -> retorna um novo Receita service
@@ -63,4 +64,9 @@ func (r receitaService) Delete(id uint64) error {
 // FindById -> retorna a receita com o id passado
 func (r receitaService) FindById(id uint64) (model.Receita, error) {
 	return r.receitaRepository.FindById(id)
+}
+
+// GetAll -> retorna todas as receitas cadastradas de acordo com os parâmetros passados
+func (r receitaService) GetAll(receita model.Receita) (receitas []model.Receita, erro error) {
+	return r.receitaRepository.GetAll(receita)
 }

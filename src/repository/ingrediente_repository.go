@@ -81,7 +81,7 @@ func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingredient
 	return ingrediente, erro
 }
 
-// GetAll -> busca os ingrediente no banco de dados que correspondem a descrição passada
+// GetAll -> busca todos os ingredientes no banco de dados que correspondem a descrição passada
 func (i ingredienteRepository) GetAll(descricao string) (ingredientes []model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...GetAll")
 

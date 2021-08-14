@@ -17,3 +17,18 @@ var UnidadeMedidaValidation validator.Func = func(fl validator.FieldLevel) bool 
 	}
 	return false
 }
+
+var CategoriaValidation validator.Func = func(fl validator.FieldLevel) bool {
+	code, ok := fl.Field().Interface().(constants.Categoria)
+	defer categoriaInvalida()
+	if ok {
+		_ = constants.Categoria(code).String()
+	}
+	return ok
+}
+
+func categoriaInvalida() {
+	if r := recover(); r != nil {
+		return
+	}
+}

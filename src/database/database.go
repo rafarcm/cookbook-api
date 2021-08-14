@@ -31,5 +31,5 @@ func DBConnection() (*gorm.DB, error) {
 // Migrate : Irá criar as tabelas do sistema no banco de dados
 func Migrate(db *gorm.DB) error {
 	log.Print("[Criando as tabelas do sistema]")
-	return db.AutoMigrate(&model.Ingrediente{}, &model.Receita{}, &model.IngredienteReceita{})
+	return db.AutoMigrate(&model.Ingrediente{}, &model.Utensilio{}, &model.Receita{}, &model.IngredienteReceita{})
 }

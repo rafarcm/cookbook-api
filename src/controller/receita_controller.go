@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"cookbook/src/constants"
 	"cookbook/src/model"
 	"cookbook/src/service"
 	"fmt"
@@ -22,6 +23,7 @@ type ReceitaController interface {
 	UpdateReceita(*gin.Context)
 	DeleteReceita(*gin.Context)
 	FindReceitaById(*gin.Context)
+	GetAllReceitas(c *gin.Context)
 }
 
 //NewReceitaController -> retorna um ReceitaController
@@ -43,13 +45,13 @@ func (r receitaController) AddReceita(c *gin.Context) {
 		return
 	}
 
-	ingrediente, erro := r.receitaService.WithTrx(txHandle).Save(receita)
+	receita, erro := r.receitaService.WithTrx(txHandle).Save(receita)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar receita: %s", erro.Error())})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": ingrediente})
+	c.JSON(http.StatusCreated, gin.H{"data": receita})
 }
 
 // UpdateReceita : atualiza a receita pelo seu id
@@ -113,9 +115,39 @@ func (r receitaController) FindReceitaById(c *gin.Context) {
 
 	receita, erro := r.receitaService.FindById(receitaID)
 	if erro != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar ingrediente: %s", erro.Error())})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar receita: %s", erro.Error())})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": receita})
+}
+
+// receitaController : busca todas as receitas de acordo com os parâmetros passados
+func (r receitaController) GetAllReceitas(c *gin.Context) {
+	log.Print("[ReceitaController]...Buscando todas as receitas")
+
+	var categoria uint64
+	var erro error
+
+	descricao := c.Query("descricao")
+	if c.Query("categoria") != "" {
+		categoria, erro = strconv.ParseUint(c.Query("categoria"), 10, 64)
+		if erro != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao buscar receitas: %s", erro.Error())})
+			return
+		}
+	}
+
+	receita := model.Receita{
+		Descricao: descricao,
+		Categoria: constants.Categoria(categoria),
+	}
+
+	receitas, erro := r.receitaService.GetAll(receita)
+	if erro != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar receitas: %s", erro.Error())})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": receitas})
 }

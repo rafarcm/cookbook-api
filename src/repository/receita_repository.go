@@ -3,6 +3,7 @@ package repository
 import (
 	"cookbook/src/model"
 	"errors"
+	"fmt"
 	"log"
 
 	"gorm.io/gorm"
@@ -19,6 +20,7 @@ type ReceitaRepository interface {
 	Update(model.Receita) (model.Receita, error)
 	Delete(uint64) error
 	FindById(uint64) (model.Receita, error)
+	GetAll(receita model.Receita) ([]model.Receita, error)
 }
 
 // NewReceitaRepository -> retorna um novo receita repository
@@ -43,7 +45,7 @@ func (r receitaRepository) WithTrx(trxHandle *gorm.DB) ReceitaRepository {
 func (r receitaRepository) Save(receita model.Receita) (model.Receita, error) {
 	log.Print("[ReceitaRepository]...Save")
 
-	erro := r.DB.Create(&receita).Error
+	erro := r.DB.Omit("Utensilios.*").Create(&receita).Error
 
 	return receita, erro
 }
@@ -57,7 +59,14 @@ func (r receitaRepository) Update(receita model.Receita) (model.Receita, error) 
 		return receita, erro
 	}
 
-	erro = r.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&receita).Error
+	utensilios := receita.Utensilios
+	erro = r.DB.Model(&receita).Association("Utensilios").Clear()
+	if erro != nil {
+		return receita, erro
+	}
+	receita.Utensilios = utensilios
+
+	erro = r.DB.Omit("Utensilios.*").Updates(&receita).Error
 
 	return receita, erro
 }
@@ -75,11 +84,25 @@ func (r receitaRepository) Delete(id uint64) error {
 func (r receitaRepository) FindById(id uint64) (receita model.Receita, erro error) {
 	log.Print("[ReceitaRepository]...FindById")
 
-	erro = r.DB.Preload("Ingredientes").Where("id = ?", id).First(&receita).Error
+	erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("id = ?", id).First(&receita).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return receita, nil
 	}
 
 	return receita, erro
+}
+
+// GetAll -> busca todos as receitas no banco de dados de acordo com os parâmetros passados
+func (r receitaRepository) GetAll(receita model.Receita) (receitas []model.Receita, erro error) {
+	log.Print("[ReceitaRepository]...GetAll")
+
+	descricaoBusca := fmt.Sprintf("%%%s%%", receita.Descricao)
+
+	if receita.Categoria != 0 {
+		erro = r.DB.Where("descricao LIKE ? and categoria = ?", descricaoBusca, receita.Categoria).Find(&receitas).Error
+	} else {
+		erro = r.DB.Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+	}
+	return receitas, erro
 }
