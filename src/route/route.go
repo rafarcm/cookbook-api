@@ -18,6 +18,8 @@ func SetupRoutes(db *gorm.DB) {
 		v.RegisterValidation("categoriavalidation", validators.CategoriaValidation)
 	}
 
+	httpRouter = routes.GetEmpresaRoute(db, httpRouter)
+	httpRouter = routes.GetUsuarioRoute(db, httpRouter)
 	httpRouter = routes.GetIngredienteRoute(db, httpRouter)
 	httpRouter = routes.GetUtensilioRoute(db, httpRouter)
 	httpRouter = routes.GetReceitaRoute(db, httpRouter)
