@@ -1,2 +1,2 @@
-# cookbook_api
-API desenvolvida em GoLang para sistema de cadastro de receitas
+# Cookbook API
+API desenvolvida em GoLang para sistema de cadastro de receitas para empresas como restaurantes e confeitarias.
