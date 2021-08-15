@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"cookbook/src/authentication"
 	"cookbook/src/constants"
 	"cookbook/src/model"
 	"cookbook/src/service"
@@ -45,7 +46,17 @@ func (r receitaController) AddReceita(c *gin.Context) {
 		return
 	}
 
-	receita, erro := r.receitaService.WithTrx(txHandle).Save(receita)
+	_, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar receita: %s", erro.Error())})
+		return
+	}
+	if empresaID != receita.EmpresaID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível adicionar uma receita para uma empresa que não a sua"})
+		return
+	}
+
+	receita, erro = r.receitaService.WithTrx(txHandle).Save(receita)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar receita: %s", erro.Error())})
 		return
@@ -72,6 +83,16 @@ func (r receitaController) UpdateReceita(c *gin.Context) {
 		return
 	}
 
+	_, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar receita: %s", erro.Error())})
+		return
+	}
+	if empresaID != receita.EmpresaID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar uma receita para uma empresa que não a sua"})
+		return
+	}
+
 	receita.ID = receitaID
 	receita, erro = r.receitaService.WithTrx(txHandle).Update(receita)
 	if erro != nil {
@@ -94,6 +115,21 @@ func (r receitaController) DeleteReceita(c *gin.Context) {
 		return
 	}
 
+	_, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao deleta receita: %s", erro.Error())})
+		return
+	}
+	receita, erro := r.receitaService.FindById(receitaID, empresaID)
+	if erro != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar receita: %s", erro.Error())})
+		return
+	}
+	if receita.ID == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar uma receita para uma empresa que não a sua"})
+		return
+	}
+
 	erro = r.receitaService.WithTrx(txHandle).Delete(receitaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar receita: %s", erro.Error())})
@@ -113,7 +149,13 @@ func (r receitaController) FindReceitaById(c *gin.Context) {
 		return
 	}
 
-	receita, erro := r.receitaService.FindById(receitaID)
+	_, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar receita: %s", erro.Error())})
+		return
+	}
+
+	receita, erro := r.receitaService.FindById(receitaID, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar receita: %s", erro.Error())})
 		return
@@ -143,7 +185,13 @@ func (r receitaController) GetAllReceitas(c *gin.Context) {
 		Categoria: constants.Categoria(categoria),
 	}
 
-	receitas, erro := r.receitaService.GetAll(receita)
+	_, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar receitas: %s", erro.Error())})
+		return
+	}
+
+	receitas, erro := r.receitaService.GetAll(receita, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar receitas: %s", erro.Error())})
 		return

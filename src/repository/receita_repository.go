@@ -19,8 +19,8 @@ type ReceitaRepository interface {
 	Save(model.Receita) (model.Receita, error)
 	Update(model.Receita) (model.Receita, error)
 	Delete(uint64) error
-	FindById(uint64) (model.Receita, error)
-	GetAll(receita model.Receita) ([]model.Receita, error)
+	FindById(uint64, uint64) (model.Receita, error)
+	GetAll(model.Receita, uint64) ([]model.Receita, error)
 }
 
 // NewReceitaRepository -> retorna um novo receita repository
@@ -81,10 +81,10 @@ func (r receitaRepository) Delete(id uint64) error {
 }
 
 // FindById -> busca uma receita pelo id no banco de dados
-func (r receitaRepository) FindById(id uint64) (receita model.Receita, erro error) {
+func (r receitaRepository) FindById(receitaID uint64, empresaID uint64) (receita model.Receita, erro error) {
 	log.Print("[ReceitaRepository]...FindById")
 
-	erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("id = ?", id).First(&receita).Error
+	erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("id = ? and empresa_id = ?", receitaID, empresaID).First(&receita).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return receita, nil
@@ -94,15 +94,15 @@ func (r receitaRepository) FindById(id uint64) (receita model.Receita, erro erro
 }
 
 // GetAll -> busca todos as receitas no banco de dados de acordo com os parâmetros passados
-func (r receitaRepository) GetAll(receita model.Receita) (receitas []model.Receita, erro error) {
+func (r receitaRepository) GetAll(receita model.Receita, empresaID uint64) (receitas []model.Receita, erro error) {
 	log.Print("[ReceitaRepository]...GetAll")
 
 	descricaoBusca := fmt.Sprintf("%%%s%%", receita.Descricao)
 
 	if receita.Categoria != 0 {
-		erro = r.DB.Where("descricao LIKE ? and categoria = ?", descricaoBusca, receita.Categoria).Find(&receitas).Error
+		erro = r.DB.Where("descricao LIKE ? and categoria = ? and empresa_id = ?", descricaoBusca, receita.Categoria, empresaID).Find(&receitas).Error
 	} else {
-		erro = r.DB.Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+		erro = r.DB.Where("descricao LIKE ? and empresa_id = ?", descricaoBusca, empresaID).Find(&receitas).Error
 	}
 	return receitas, erro
 }

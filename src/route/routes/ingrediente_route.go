@@ -19,11 +19,11 @@ func GetIngredienteRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 
 	ingredientes := httpRouter.Group("ingredientes")
 
-	ingredientes.POST("/", middleware.DBTransactionMiddleware(db), ingredienteController.AddIngrediente)
-	ingredientes.PUT("/:id", middleware.DBTransactionMiddleware(db), ingredienteController.UpdateIngrediente)
-	ingredientes.DELETE("/:id", middleware.DBTransactionMiddleware(db), ingredienteController.DeleteIngrediente)
-	ingredientes.GET("/:id", ingredienteController.FindIngredienteById)
-	ingredientes.GET("/", ingredienteController.GetAllIngredientes)
+	ingredientes.POST("/", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), ingredienteController.AddIngrediente)
+	ingredientes.PUT("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), ingredienteController.UpdateIngrediente)
+	ingredientes.DELETE("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), ingredienteController.DeleteIngrediente)
+	ingredientes.GET("/:id", middleware.Autenticar(), ingredienteController.FindIngredienteById)
+	ingredientes.GET("/", middleware.Autenticar(), ingredienteController.GetAllIngredientes)
 
 	return httpRouter
 }

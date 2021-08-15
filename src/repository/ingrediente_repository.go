@@ -19,8 +19,8 @@ type IngredienteRepository interface {
 	Save(model.Ingrediente) (model.Ingrediente, error)
 	Update(model.Ingrediente) (model.Ingrediente, error)
 	Delete(uint64) error
-	FindById(uint64) (model.Ingrediente, error)
-	GetAll(string) ([]model.Ingrediente, error)
+	FindById(uint64, uint64) (model.Ingrediente, error)
+	GetAll(string, uint64) ([]model.Ingrediente, error)
 }
 
 // NewingredienteRepository -> retorna um novo ingrediente repository
@@ -69,10 +69,10 @@ func (i ingredienteRepository) Delete(id uint64) error {
 }
 
 // FindById -> busca um ingrediente pelo id no banco de dados
-func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingrediente, erro error) {
+func (i ingredienteRepository) FindById(ingredienteID uint64, empresaID uint64) (ingrediente model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...FindById")
 
-	erro = i.DB.Where("id = ?", id).First(&ingrediente).Error
+	erro = i.DB.Where("id = ? and empresa_id= ? ", ingredienteID, empresaID).First(&ingrediente).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return ingrediente, nil
@@ -82,11 +82,11 @@ func (i ingredienteRepository) FindById(id uint64) (ingrediente model.Ingredient
 }
 
 // GetAll -> busca todos os ingredientes no banco de dados que correspondem a descrição passada
-func (i ingredienteRepository) GetAll(descricao string) (ingredientes []model.Ingrediente, erro error) {
+func (i ingredienteRepository) GetAll(descricao string, empresaID uint64) (ingredientes []model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...GetAll")
 
 	descricaoBusca := fmt.Sprintf("%%%s%%", descricao)
-	erro = i.DB.Where("descricao LIKE ?", descricaoBusca).Find(&ingredientes).Error
+	erro = i.DB.Where("descricao LIKE ? and empresa_id = ?", descricaoBusca, empresaID).Find(&ingredientes).Error
 
 	return ingredientes, erro
 }

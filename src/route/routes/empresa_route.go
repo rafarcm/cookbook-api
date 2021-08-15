@@ -20,9 +20,9 @@ func GetEmpresaRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 	empresas := httpRouter.Group("empresas")
 
 	empresas.POST("/", middleware.DBTransactionMiddleware(db), empresaController.AddEmpresa)
-	empresas.PUT("/:id", middleware.DBTransactionMiddleware(db), empresaController.UpdateEmpresa)
-	empresas.DELETE("/:id", middleware.DBTransactionMiddleware(db), empresaController.DeleteEmpresa)
-	empresas.GET("/:id", empresaController.FindEmpresaById)
-	empresas.GET("/", empresaController.GetAllEmpresas)
+	empresas.PUT("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), empresaController.UpdateEmpresa)
+	empresas.DELETE("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), empresaController.DeleteEmpresa)
+	empresas.GET("/:id", middleware.Autenticar(), empresaController.FindEmpresaById)
+	empresas.GET("/", middleware.Autenticar(), empresaController.GetAllEmpresas)
 	return httpRouter
 }

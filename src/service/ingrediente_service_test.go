@@ -154,7 +154,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("não retorna nunhum ingrediente", func() {
-				ingrediente, _ = ingredienteService.FindById(ingredienteID)
+				ingrediente, _ = ingredienteService.FindById(ingredienteID, 1)
 				Expect(ingrediente).To(Equal(model.Ingrediente{}))
 			})
 		})
@@ -179,7 +179,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("retorna o ingrediente", func() {
-				ingrediente, _ = ingredienteService.FindById(ingredienteID)
+				ingrediente, _ = ingredienteService.FindById(ingredienteID, 1)
 				Expect(ingrediente.ID).To(Equal(ingredienteID))
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
 				Expect(ingrediente.UnidadeMedida).To(Equal(constants.Quilograma))
@@ -197,7 +197,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("não retorna nunhum ingrediente", func() {
-				ingredientes, err = ingredienteService.GetAll("")
+				ingredientes, err = ingredienteService.GetAll("", 1)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(0))
 			})
@@ -232,7 +232,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("retorna apenas os registros com a descrição passada", func() {
-				ingredientes, err = ingredienteService.GetAll(descricaoIngrediente)
+				ingredientes, err = ingredienteService.GetAll(descricaoIngrediente, 1)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(2))
 			})

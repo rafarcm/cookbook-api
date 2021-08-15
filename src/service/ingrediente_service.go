@@ -18,8 +18,8 @@ type IngredienteService interface {
 	Save(model.Ingrediente) (model.Ingrediente, error)
 	Update(model.Ingrediente) (model.Ingrediente, error)
 	Delete(uint64) error
-	FindById(uint64) (model.Ingrediente, error)
-	GetAll(string) ([]model.Ingrediente, error)
+	FindById(uint64, uint64) (model.Ingrediente, error)
+	GetAll(string, uint64) ([]model.Ingrediente, error)
 }
 
 // NewIngredienteService -> retorna um novo ingrediente service
@@ -45,7 +45,7 @@ func (i ingredienteService) Save(ingrediente model.Ingrediente) (model.Ingredien
 
 // Update -> atualiza a descrição e unidade de medida do ingrediente e o retorna
 func (i ingredienteService) Update(ingrediente model.Ingrediente) (model.Ingrediente, error) {
-	ingredienteBanco, erro := i.ingredienteRepository.FindById(ingrediente.ID)
+	ingredienteBanco, erro := i.ingredienteRepository.FindById(ingrediente.ID, ingrediente.EmpresaID)
 	if erro != nil {
 		return model.Ingrediente{}, erro
 	}
@@ -62,11 +62,11 @@ func (i ingredienteService) Delete(id uint64) error {
 }
 
 // FindById -> retorna o ingrediente com o id passado
-func (i ingredienteService) FindById(id uint64) (model.Ingrediente, error) {
-	return i.ingredienteRepository.FindById(id)
+func (i ingredienteService) FindById(ingredienteID uint64, empresaID uint64) (model.Ingrediente, error) {
+	return i.ingredienteRepository.FindById(ingredienteID, empresaID)
 }
 
 // GetAll -> retorna todos os ingredientes cadastrados que contém a descrição desejada
-func (i ingredienteService) GetAll(descricao string) ([]model.Ingrediente, error) {
-	return i.ingredienteRepository.GetAll(descricao)
+func (i ingredienteService) GetAll(descricao string, empresaID uint64) ([]model.Ingrediente, error) {
+	return i.ingredienteRepository.GetAll(descricao, empresaID)
 }

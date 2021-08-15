@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"cookbook/src/authentication"
 	"cookbook/src/model"
 	"cookbook/src/service"
 	"fmt"
@@ -38,19 +39,19 @@ func (e empresaController) AddEmpresa(c *gin.Context) {
 
 	txHandle := c.MustGet("db_trx").(*gorm.DB)
 
-	var Empresa model.Empresa
-	if erro := c.ShouldBindJSON(&Empresa); erro != nil {
+	var empresa model.Empresa
+	if erro := c.ShouldBindJSON(&empresa); erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": erro.Error()})
 		return
 	}
 
-	Empresa, erro := e.empresaService.WithTrx(txHandle).Save(Empresa)
+	empresa, erro := e.empresaService.WithTrx(txHandle).Save(empresa)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar Empresa: %s", erro.Error())})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": Empresa})
+	c.JSON(http.StatusCreated, gin.H{"data": empresa})
 }
 
 // UpdateEmpresa : atualiza a Empresa pelo seu id
@@ -59,26 +60,36 @@ func (e empresaController) UpdateEmpresa(c *gin.Context) {
 
 	txHandle := c.MustGet("db_trx").(*gorm.DB)
 
-	EmpresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+	empresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	if erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao atualizar Empresa: %s", erro.Error())})
 		return
 	}
 
-	var Empresa model.Empresa
-	if erro := c.ShouldBindJSON(&Empresa); erro != nil {
+	_, empresaTokenID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar empresa: %s", erro.Error())})
+		return
+	}
+	if empresaTokenID != empresaID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar uma empresa que não a sua"})
+		return
+	}
+
+	var empresa model.Empresa
+	if erro := c.ShouldBindJSON(&empresa); erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao atualizar Empresa: %s", erro.Error())})
 		return
 	}
 
-	Empresa.ID = EmpresaID
-	Empresa, erro = e.empresaService.WithTrx(txHandle).Update(Empresa)
+	empresa.ID = empresaID
+	empresa, erro = e.empresaService.WithTrx(txHandle).Update(empresa)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao atualizar Empresa: %s", erro.Error())})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": Empresa})
+	c.JSON(http.StatusOK, gin.H{"data": empresa})
 }
 
 // DeleteEmpresa : deleta a Empresa pelo seu id
@@ -87,13 +98,23 @@ func (e empresaController) DeleteEmpresa(c *gin.Context) {
 
 	txHandle := c.MustGet("db_trx").(*gorm.DB)
 
-	EmpresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+	empresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	if erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao deletar Empresa: %s", erro.Error())})
 		return
 	}
 
-	erro = e.empresaService.WithTrx(txHandle).Delete(EmpresaID)
+	_, empresaTokenID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao deletar empresa: %s", erro.Error())})
+		return
+	}
+	if empresaTokenID != empresaID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar uma empresa que não a sua"})
+		return
+	}
+
+	erro = e.empresaService.WithTrx(txHandle).Delete(empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar Empresa: %s", erro.Error())})
 		return
@@ -106,19 +127,19 @@ func (e empresaController) DeleteEmpresa(c *gin.Context) {
 func (e empresaController) FindEmpresaById(c *gin.Context) {
 	log.Print("[EmpresaController]...Buscando Empresa por id")
 
-	EmpresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+	empresaID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	if erro != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao buscar Empresa: %s", erro.Error())})
 		return
 	}
 
-	Empresa, erro := e.empresaService.FindById(EmpresaID)
+	empresa, erro := e.empresaService.FindById(empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar Empresa: %s", erro.Error())})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": Empresa})
+	c.JSON(http.StatusOK, gin.H{"data": empresa})
 }
 
 // EmpresaController : busca todas as Empresas de acordo com os parâmetros passados

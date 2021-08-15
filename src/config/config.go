@@ -34,4 +34,6 @@ func Carregar(filenames ...string) {
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"))
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }

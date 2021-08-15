@@ -14,16 +14,16 @@ import (
 func GetUtensilioRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 
 	utensilioRepository := repository.NewUtensilioRepository(db)
-	UtensilioService := service.NewUtensilioService(utensilioRepository)
-	utensilioController := controller.NewUtensilioController(UtensilioService)
+	utensilioService := service.NewUtensilioService(utensilioRepository)
+	utensilioController := controller.NewUtensilioController(utensilioService)
 
 	utensilios := httpRouter.Group("utensilios")
 
-	utensilios.POST("/", middleware.DBTransactionMiddleware(db), utensilioController.AddUtensilio)
-	utensilios.PUT("/:id", middleware.DBTransactionMiddleware(db), utensilioController.UpdateUtensilio)
-	utensilios.DELETE("/:id", middleware.DBTransactionMiddleware(db), utensilioController.DeleteUtensilio)
-	utensilios.GET("/:id", utensilioController.FindUtensilioById)
-	utensilios.GET("/", utensilioController.GetAllUtensilios)
+	utensilios.POST("/", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), utensilioController.AddUtensilio)
+	utensilios.PUT("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), utensilioController.UpdateUtensilio)
+	utensilios.DELETE("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), utensilioController.DeleteUtensilio)
+	utensilios.GET("/:id", middleware.Autenticar(), utensilioController.FindUtensilioById)
+	utensilios.GET("/", middleware.Autenticar(), utensilioController.GetAllUtensilios)
 
 	return httpRouter
 }

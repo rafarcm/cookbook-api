@@ -51,9 +51,9 @@ func (mr *MockIngredienteRepositoryMockRecorder) Delete(arg0 interface{}) *gomoc
 }
 
 // FindById mocks base method.
-func (m *MockIngredienteRepository) FindById(arg0 uint64) (model.Ingrediente, error) {
+func (m *MockIngredienteRepository) FindById(arg0 uint64, arg1 uint64) (model.Ingrediente, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindById", arg0)
+	ret := m.ctrl.Call(m, "FindById", arg0, arg1)
 	ret0, _ := ret[0].(model.Ingrediente)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
@@ -66,9 +66,9 @@ func (mr *MockIngredienteRepositoryMockRecorder) FindById(arg0 interface{}) *gom
 }
 
 // GetAll mocks base method.
-func (m *MockIngredienteRepository) GetAll(arg0 string) ([]model.Ingrediente, error) {
+func (m *MockIngredienteRepository) GetAll(arg0 string, arg1 uint64) ([]model.Ingrediente, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", arg0)
+	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
 	ret0, _ := ret[0].([]model.Ingrediente)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1

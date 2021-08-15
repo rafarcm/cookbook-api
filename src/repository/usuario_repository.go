@@ -19,8 +19,9 @@ type UsuarioRepository interface {
 	Save(model.Usuario) (model.Usuario, error)
 	Update(model.Usuario) (model.Usuario, error)
 	Delete(uint64) error
-	FindById(uint64) (model.Usuario, error)
-	GetAll(model.Usuario) ([]model.Usuario, error)
+	FindById(uint64, uint64) (model.Usuario, error)
+	FindByUsername(string) (model.Usuario, error)
+	GetAll(model.Usuario, uint64) ([]model.Usuario, error)
 }
 
 // NewUsuarioRepository -> retorna um novo usuario repository
@@ -69,10 +70,10 @@ func (u usuarioRepository) Delete(id uint64) error {
 }
 
 // FindById -> busca um usuario pelo id no banco de dados
-func (u usuarioRepository) FindById(id uint64) (usuario model.Usuario, erro error) {
+func (u usuarioRepository) FindById(usuarioID uint64, empresaID uint64) (usuario model.Usuario, erro error) {
 	log.Print("[usuarioRepository]...FindById")
 
-	erro = u.DB.Where("id = ?", id).First(&usuario).Error
+	erro = u.DB.Where("id = ?", usuarioID).First(&usuario).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return usuario, nil
@@ -81,16 +82,25 @@ func (u usuarioRepository) FindById(id uint64) (usuario model.Usuario, erro erro
 	return usuario, erro
 }
 
+// FindByUsername -> busca o usuario no banco de dados pelo nick
+func (u usuarioRepository) FindByUsername(username string) (usuario model.Usuario, erro error) {
+	log.Print("[usuarioRepository]...FindByNick")
+
+	erro = u.DB.Where("username = ?", username).Find(&usuario).Error
+
+	return usuario, erro
+}
+
 // GetAll -> busca todos os usuarios no banco de dados que correspondem a descrição passada
-func (u usuarioRepository) GetAll(usuario model.Usuario) (usuarios []model.Usuario, erro error) {
+func (u usuarioRepository) GetAll(usuario model.Usuario, empresaID uint64) (usuarios []model.Usuario, erro error) {
 	log.Print("[usuarioRepository]...GetAll")
 
-	nickBusca := fmt.Sprintf("%%%s%%", usuario.Nick)
+	usernameBusca := fmt.Sprintf("%%%s%%", usuario.Username)
 
 	if usuario.EmpresaID != 0 {
-		erro = u.DB.Where("nick LIKE ? and empresa_id = ?", nickBusca, usuario.EmpresaID).Find(&usuarios).Error
+		erro = u.DB.Where("username LIKE ? and empresa_id = ?", usernameBusca, empresaID).Find(&usuarios).Error
 	} else {
-		erro = u.DB.Where("nick LIKE ?", nickBusca).Find(&usuarios).Error
+		erro = u.DB.Where("username LIKE ? and empresa_id = ?", usernameBusca, empresaID).Find(&usuarios).Error
 	}
 
 	return usuarios, erro

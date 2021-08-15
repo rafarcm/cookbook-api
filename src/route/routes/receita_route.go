@@ -19,10 +19,10 @@ func GetReceitaRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 
 	receitas := httpRouter.Group("receitas")
 
-	receitas.POST("/", middleware.DBTransactionMiddleware(db), receitaController.AddReceita)
-	receitas.PUT("/:id", middleware.DBTransactionMiddleware(db), receitaController.UpdateReceita)
-	receitas.DELETE("/:id", middleware.DBTransactionMiddleware(db), receitaController.DeleteReceita)
-	receitas.GET("/:id", receitaController.FindReceitaById)
-	receitas.GET("/", receitaController.GetAllReceitas)
+	receitas.POST("/", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), receitaController.AddReceita)
+	receitas.PUT("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), receitaController.UpdateReceita)
+	receitas.DELETE("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), receitaController.DeleteReceita)
+	receitas.GET("/:id", middleware.Autenticar(), receitaController.FindReceitaById)
+	receitas.GET("/", middleware.Autenticar(), receitaController.GetAllReceitas)
 	return httpRouter
 }

@@ -119,7 +119,7 @@ var _ = Describe("IngredienteRepository", func() {
 			})
 
 			It("não retorna nunhum ingrediente", func() {
-				ingrediente, _ = ingredienteRepo.FindById(ingredienteID)
+				ingrediente, _ = ingredienteRepo.FindById(ingredienteID, 1)
 				Expect(ingrediente).To(Equal(model.Ingrediente{}))
 			})
 		})
@@ -140,7 +140,7 @@ var _ = Describe("IngredienteRepository", func() {
 			})
 
 			It("retorna apenas o registro pertencente ao ID", func() {
-				ingrediente, err = ingredienteRepo.FindById(ingredienteID)
+				ingrediente, err = ingredienteRepo.FindById(ingredienteID, 1)
 				Expect(err).To(BeNil())
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
 				Expect(ingrediente.UnidadeMedida).To(Equal(constants.Quilograma))
@@ -152,7 +152,7 @@ var _ = Describe("IngredienteRepository", func() {
 	Describe("GetAll", func() {
 		Describe("sem registros no banco de dados", func() {
 			It("não retorna nunhum ingrediente", func() {
-				ingredientes, err = ingredienteRepo.GetAll("TESTE_SEM_RETORNO")
+				ingredientes, err = ingredienteRepo.GetAll("TESTE_SEM_RETORNO", 1)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(0))
 			})
@@ -174,7 +174,7 @@ var _ = Describe("IngredienteRepository", func() {
 			})
 
 			It("retorna apenas os registros com a descrição passada", func() {
-				ingredientes, err = ingredienteRepo.GetAll(descricaoIngrediente)
+				ingredientes, err = ingredienteRepo.GetAll(descricaoIngrediente, 1)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(1))
 				Expect(ingredientes[0].Descricao).To(Equal(descricaoIngrediente))
