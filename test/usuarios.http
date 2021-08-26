@@ -1,0 +1,30 @@
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "empresaId": 1,
+    "email"  : "mel@teste.com",
+    "nome"   : "Mel",
+    "senha"  : "1234",
+    "perfil" : 2
+}
+###
+
+# Busca os usuários
+GET http://localhost:8080/usuarios
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+###
+
+# Busca um usuário por id
+GET http://localhost:8080/usuarios/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+###
+
+# Busca os usuários por nome
+GET http://localhost:8080/usuarios?nome=el
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+###

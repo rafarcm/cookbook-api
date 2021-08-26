@@ -39,7 +39,7 @@ func (l loginController) Login(c *gin.Context) {
 		return
 	}
 
-	usuario, erro := l.usuarioService.FindByUsername(login.Username)
+	usuario, erro := l.usuarioService.FindByEmail(login.Email)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao realizar login: %s", erro.Error())})
 		return

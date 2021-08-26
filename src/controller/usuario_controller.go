@@ -186,7 +186,7 @@ func (u usuarioController) GetAllUsuarios(c *gin.Context) {
 	var empresaId uint64
 	var erro error
 
-	username := c.Query("username")
+	nome := c.Query("nome")
 	if c.Query("empresaId") != "" {
 		empresaId, erro = strconv.ParseUint(c.Query("empresaId"), 10, 64)
 		if erro != nil {
@@ -196,7 +196,7 @@ func (u usuarioController) GetAllUsuarios(c *gin.Context) {
 	}
 
 	usuario := model.Usuario{
-		Username:  username,
+		Nome:      nome,
 		EmpresaID: empresaId,
 	}
 

@@ -1,0 +1,21 @@
+# Cadastra um novo utensílio (Fue)
+POST http://localhost:8080/utensilios
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "descricao": "Fue",
+    "empresaId": 1
+}
+###
+
+# Cadastra um novo utensílio (Fue)
+POST http://localhost:8080/utensilios
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "descricao": "Batedeira",
+    "empresaId": 1
+}
+###

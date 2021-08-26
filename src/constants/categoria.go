@@ -1,6 +1,6 @@
 package constants
 
-type Categoria uint16
+type Categoria uint8
 
 const (
 	Acompanhamentos Categoria = iota + 1

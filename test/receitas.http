@@ -1,0 +1,35 @@
+POST http://localhost:8080/receitas
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "descricao"     : "Bolo",
+    "modoPreparo"   : "Teste preparo Bolo",
+    "categoria"     : 5,
+    "rendimento"    : 5,
+    "tempoPreparo"  : 90,
+    "preco"         : 80.50,
+    "precoSugerido" : 70.30,
+    "empresaId"     : 1, 
+    "ingredientes" : [
+        {
+            "ingredienteId" : 1,
+            "unidadeMedida" : "g",
+            "quantidade"    : 150
+        },
+        {
+            "ingredienteId" : 2,
+            "unidadeMedida" : "ml",
+            "quantidade"    : 200
+        }
+    ],
+    "utensilios" : [
+    	{
+            "utensilioId" : 1
+    	},
+    	{
+            "utensilioId" : 2
+    	}
+    ]
+}
+###

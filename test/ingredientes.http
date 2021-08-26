@@ -1,0 +1,25 @@
+# Cadastra um novo ingrediente (Açucar)
+POST http://localhost:8080/ingredientes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "descricao": "Açucar",
+    "unidadeMedida": "kg",
+    "preco": 5.20,
+    "empresaId": 1 
+}
+###
+
+# Cadastra um novo ingrediente (Leite)
+POST http://localhost:8080/ingredientes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+
+{
+    "descricao": "Leite",
+    "unidadeMedida": "l",
+    "preco": 6.80,
+    "empresaId": 1 
+}
+###

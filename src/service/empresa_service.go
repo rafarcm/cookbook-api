@@ -36,24 +36,29 @@ func (e empresaService) WithTrx(trxHandle *gorm.DB) EmpresaService {
 }
 
 // Save -> salva uma nova Empresa e a retorna
-func (e empresaService) Save(Empresa model.Empresa) (model.Empresa, error) {
-	Empresa.CriadoEm = time.Now()
-	Empresa.AtualizadoEm = Empresa.CriadoEm
+func (e empresaService) Save(empresa model.Empresa) (model.Empresa, error) {
+	empresa.CriadoEm = time.Now()
+	empresa.AtualizadoEm = empresa.CriadoEm
 
-	return e.empresaRepository.Save(Empresa)
+	for i := range empresa.Usuarios {
+		empresa.Usuarios[i].CriadoEm = empresa.CriadoEm
+		empresa.Usuarios[i].AtualizadoEm = empresa.AtualizadoEm
+	}
+
+	return e.empresaRepository.Save(empresa)
 }
 
 // Update -> atualiza a Empresa e a retorna
-func (e empresaService) Update(Empresa model.Empresa) (model.Empresa, error) {
-	EmpresaBanco, erro := e.empresaRepository.FindById(Empresa.ID)
+func (e empresaService) Update(empresa model.Empresa) (model.Empresa, error) {
+	EmpresaBanco, erro := e.empresaRepository.FindById(empresa.ID)
 	if erro != nil {
 		return model.Empresa{}, erro
 	}
 
-	Empresa.CriadoEm = EmpresaBanco.CriadoEm
-	Empresa.AtualizadoEm = time.Now()
+	empresa.CriadoEm = EmpresaBanco.CriadoEm
+	empresa.AtualizadoEm = time.Now()
 
-	return e.empresaRepository.Update(Empresa)
+	return e.empresaRepository.Update(empresa)
 }
 
 // Delete -> exclui uma Empresa com o id passado

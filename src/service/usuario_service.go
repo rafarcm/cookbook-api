@@ -19,7 +19,7 @@ type UsuarioService interface {
 	Update(model.Usuario) (model.Usuario, error)
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Usuario, error)
-	FindByUsername(string) (model.Usuario, error)
+	FindByEmail(string) (model.Usuario, error)
 	GetAll(model.Usuario, uint64) ([]model.Usuario, error)
 }
 
@@ -67,9 +67,9 @@ func (u usuarioService) FindById(receitaID uint64, empresaID uint64) (model.Usua
 	return u.usuarioRepository.FindById(receitaID, empresaID)
 }
 
-// FindByUsername -> retorna a Usuario com o username passado
-func (u usuarioService) FindByUsername(username string) (model.Usuario, error) {
-	return u.usuarioRepository.FindByUsername(username)
+// FindByEmail -> retorna a Usuario com o email passado
+func (u usuarioService) FindByEmail(username string) (model.Usuario, error) {
+	return u.usuarioRepository.FindByEmail(username)
 }
 
 // GetAll -> retorna todos os Usuarioss cadastrados que contém a descrição desejada

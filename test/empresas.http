@@ -1,0 +1,28 @@
+# Cadastra uma nova empresa
+POST http://localhost:8080/empresas
+Content-Type: application/json
+
+{
+    "nome" : "Doce Art",
+    "usuarios" : [
+        {
+            "email"  : "rafarcm@teste.com",
+            "nome"   : "Rafael",
+            "senha"  : "1234",
+            "perfil" : 1
+        }
+    ]
+}
+###
+
+# Busca as empresas
+GET http://localhost:8080/empresas
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+###
+
+# Busca uma empresa por id
+GET http://localhost:8080/empresas/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+###

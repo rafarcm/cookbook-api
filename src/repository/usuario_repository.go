@@ -20,7 +20,7 @@ type UsuarioRepository interface {
 	Update(model.Usuario) (model.Usuario, error)
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Usuario, error)
-	FindByUsername(string) (model.Usuario, error)
+	FindByEmail(string) (model.Usuario, error)
 	GetAll(model.Usuario, uint64) ([]model.Usuario, error)
 }
 
@@ -82,25 +82,25 @@ func (u usuarioRepository) FindById(usuarioID uint64, empresaID uint64) (usuario
 	return usuario, erro
 }
 
-// FindByUsername -> busca o usuario no banco de dados pelo nick
-func (u usuarioRepository) FindByUsername(username string) (usuario model.Usuario, erro error) {
-	log.Print("[usuarioRepository]...FindByNick")
+// FindByEmail -> busca o usuario no banco de dados pelo email
+func (u usuarioRepository) FindByEmail(email string) (usuario model.Usuario, erro error) {
+	log.Print("[usuarioRepository]...FindByEmail")
 
-	erro = u.DB.Where("username = ?", username).Find(&usuario).Error
+	erro = u.DB.Where("email = ?", email).Find(&usuario).Error
 
 	return usuario, erro
 }
 
-// GetAll -> busca todos os usuarios no banco de dados que correspondem a descrição passada
+// GetAll -> busca todos os usuarios no banco de dados que correspondem ao email passado
 func (u usuarioRepository) GetAll(usuario model.Usuario, empresaID uint64) (usuarios []model.Usuario, erro error) {
 	log.Print("[usuarioRepository]...GetAll")
 
-	usernameBusca := fmt.Sprintf("%%%s%%", usuario.Username)
+	nomeBusca := fmt.Sprintf("%%%s%%", usuario.Nome)
 
 	if usuario.EmpresaID != 0 {
-		erro = u.DB.Where("username LIKE ? and empresa_id = ?", usernameBusca, empresaID).Find(&usuarios).Error
+		erro = u.DB.Where("nome LIKE ? and empresa_id = ?", nomeBusca, empresaID).Find(&usuarios).Error
 	} else {
-		erro = u.DB.Where("username LIKE ? and empresa_id = ?", usernameBusca, empresaID).Find(&usuarios).Error
+		erro = u.DB.Where("nome LIKE ?", nomeBusca).Find(&usuarios).Error
 	}
 
 	return usuarios, erro

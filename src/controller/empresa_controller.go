@@ -3,6 +3,7 @@ package controller
 import (
 	"cookbook/src/authentication"
 	"cookbook/src/model"
+	"cookbook/src/security"
 	"cookbook/src/service"
 	"fmt"
 	"log"
@@ -45,9 +46,18 @@ func (e empresaController) AddEmpresa(c *gin.Context) {
 		return
 	}
 
+	for i := range empresa.Usuarios {
+		senhaComHash, erro := security.Hash(empresa.Usuarios[i].Senha)
+		if erro != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar empresa: %s", erro.Error())})
+			return
+		}
+		empresa.Usuarios[i].Senha = string(senhaComHash)
+	}
+
 	empresa, erro := e.empresaService.WithTrx(txHandle).Save(empresa)
 	if erro != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar Empresa: %s", erro.Error())})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar empresa: %s", erro.Error())})
 		return
 	}
 
