@@ -3,6 +3,7 @@ package service
 import (
 	"cookbook/src/model"
 	"cookbook/src/repository"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,10 +17,10 @@ type utensilioService struct {
 type UtensilioService interface {
 	WithTrx(*gorm.DB) UtensilioService
 	Save(model.Utensilio) (model.Utensilio, error)
-	Update(model.Utensilio) (model.Utensilio, error)
-	Delete(uint64) error
+	Update(model.Utensilio, uint64) (model.Utensilio, error)
+	Delete(uint64, uint64) error
 	FindById(uint64, uint64) (model.Utensilio, error)
-	GetAll(string, uint64) ([]model.Utensilio, error)
+	GetAll(string, uint64, uint64) ([]model.Utensilio, error)
 }
 
 // NewUtensilioService -> retorna um novo Utensilio service
@@ -44,10 +45,15 @@ func (u utensilioService) Save(utensilio model.Utensilio) (model.Utensilio, erro
 }
 
 // Update -> atualiza a Utensilio e a retorna
-func (u utensilioService) Update(utensilio model.Utensilio) (model.Utensilio, error) {
-	utensilioBanco, erro := u.utensilioRepository.FindById(utensilio.ID, utensilio.EmpresaID)
+func (u utensilioService) Update(utensilio model.Utensilio, empresaID uint64) (model.Utensilio, error) {
+
+	utensilioBanco, erro := u.utensilioRepository.FindById(utensilio.ID, empresaID)
 	if erro != nil {
 		return model.Utensilio{}, erro
+	}
+
+	if utensilioBanco.ID == 0 {
+		return model.Utensilio{}, errors.New("não é possível alterar este utensílio")
 	}
 
 	utensilio.CriadoEm = utensilioBanco.CriadoEm
@@ -57,8 +63,17 @@ func (u utensilioService) Update(utensilio model.Utensilio) (model.Utensilio, er
 }
 
 // Delete -> exclui uma Utensilio com o id passado
-func (u utensilioService) Delete(id uint64) error {
-	return u.utensilioRepository.Delete(id)
+func (u utensilioService) Delete(utensilioID uint64, empresaID uint64) error {
+	utensilioBanco, erro := u.utensilioRepository.FindById(utensilioID, empresaID)
+	if erro != nil {
+		return erro
+	}
+
+	if utensilioBanco.ID != 0 {
+		return errors.New("não é possível deletar este utensílio")
+	}
+
+	return u.utensilioRepository.Delete(utensilioID)
 }
 
 // FindById -> retorna a Utensilio com o id passado
@@ -67,6 +82,6 @@ func (u utensilioService) FindById(utensilioID uint64, empresaID uint64) (model.
 }
 
 // GetAll -> retorna todos os utensilioss cadastrados que contém a descrição desejada
-func (u utensilioService) GetAll(descricao string, empresaID uint64) ([]model.Utensilio, error) {
-	return u.utensilioRepository.GetAll(descricao, empresaID)
+func (u utensilioService) GetAll(descricao string, empresaID uint64, usuarioID uint64) ([]model.Utensilio, error) {
+	return u.utensilioRepository.GetAll(descricao, empresaID, usuarioID)
 }

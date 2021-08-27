@@ -38,7 +38,7 @@ func ValidarToken(c *gin.Context) error {
 	return errors.New("token inválido")
 }
 
-// ExtrairIDs -> retorna o usuarioID que esta salvo no token
+// ExtrairIDs -> retorna o usuarioID e empresaID que esta salvo no token
 func ExtrairIDs(c *gin.Context) (uint64, uint64, error) {
 	tokenString := extrairToken(c)
 	token, erro := jwt.Parse(tokenString, retornarChaveDeverificacao)

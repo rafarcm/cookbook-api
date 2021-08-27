@@ -58,16 +58,14 @@ func (u usuarioController) AddUsuario(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar usuário: %s", erro.Error())})
 		return
 	}
-	if empresaID != usuario.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível adicionar um usuário para uma empresa que não a sua"})
-		return
-	}
 
+	usuario.EmpresaID = empresaID
 	usuario, erro = u.usuarioService.WithTrx(txHandle).Save(usuario)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao adicionar usuário: %s", erro.Error())})
 		return
 	}
+	usuario.Senha = ""
 
 	c.JSON(http.StatusCreated, gin.H{"data": usuario})
 }
@@ -96,20 +94,25 @@ func (u usuarioController) UpdateUsuario(c *gin.Context) {
 		return
 	}
 	if usuarioID != usuarioTokenID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar um usuário que não o seu"})
-		return
-	}
-	if empresaID != usuario.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar um usuário para uma empresa que não a sua"})
-		return
+		usuarioBanco, erro := u.usuarioService.FindById(usuarioTokenID, empresaID)
+		if erro != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar usuário: %s", erro.Error())})
+			return
+		}
+		if !usuarioBanco.IsAdministrador() {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar um usuário que não o seu"})
+			return
+		}
 	}
 
+	usuario.EmpresaID = empresaID
 	usuario.ID = usuarioID
-	usuario, erro = u.usuarioService.WithTrx(txHandle).Update(usuario)
+	usuario, erro = u.usuarioService.WithTrx(txHandle).Update(usuario, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao atualizar usuário: %s", erro.Error())})
 		return
 	}
+	usuario.Senha = ""
 
 	c.JSON(http.StatusOK, gin.H{"data": usuario})
 }
@@ -132,20 +135,18 @@ func (u usuarioController) DeleteUsuario(c *gin.Context) {
 		return
 	}
 	if usuarioID != usuarioTokenID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar um usuário que não o seu"})
-		return
-	}
-	utensilio, erro := u.usuarioService.FindById(usuarioID, empresaID)
-	if erro != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar usuário: %s", erro.Error())})
-		return
-	}
-	if utensilio.ID == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar um usuário para uma empresa que não a sua"})
-		return
+		usuarioBanco, erro := u.usuarioService.FindById(usuarioTokenID, empresaID)
+		if erro != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar usuário: %s", erro.Error())})
+			return
+		}
+		if !usuarioBanco.IsAdministrador() {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar um usuário que não o seu"})
+			return
+		}
 	}
 
-	erro = u.usuarioService.WithTrx(txHandle).Delete(usuarioID)
+	erro = u.usuarioService.WithTrx(txHandle).Delete(usuarioID, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar usuário: %s", erro.Error())})
 		return
@@ -166,7 +167,7 @@ func (u usuarioController) FindUsuarioById(c *gin.Context) {
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar usuário: %s", erro.Error())})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar usuário: %s", erro.Error())})
 		return
 	}
 
@@ -175,6 +176,7 @@ func (u usuarioController) FindUsuarioById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar usuário: %s", erro.Error())})
 		return
 	}
+	usuario.Senha = ""
 
 	c.JSON(http.StatusOK, gin.H{"data": usuario})
 }
@@ -183,22 +185,7 @@ func (u usuarioController) FindUsuarioById(c *gin.Context) {
 func (u usuarioController) GetAllUsuarios(c *gin.Context) {
 	log.Print("[UsuarioController]...Buscando todas as usuários")
 
-	var empresaId uint64
-	var erro error
-
 	nome := c.Query("nome")
-	if c.Query("empresaId") != "" {
-		empresaId, erro = strconv.ParseUint(c.Query("empresaId"), 10, 64)
-		if erro != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao buscar usuários: %s", erro.Error())})
-			return
-		}
-	}
-
-	usuario := model.Usuario{
-		Nome:      nome,
-		EmpresaID: empresaId,
-	}
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
@@ -206,10 +193,14 @@ func (u usuarioController) GetAllUsuarios(c *gin.Context) {
 		return
 	}
 
-	usuarios, erro := u.usuarioService.GetAll(usuario, empresaID)
+	usuarios, erro := u.usuarioService.GetAll(nome, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar usuários: %s", erro.Error())})
 		return
+	}
+
+	for i := range usuarios {
+		usuarios[i].Senha = ""
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": usuarios})

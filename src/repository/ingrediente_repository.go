@@ -20,7 +20,7 @@ type IngredienteRepository interface {
 	Update(model.Ingrediente) (model.Ingrediente, error)
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Ingrediente, error)
-	GetAll(string, uint64) ([]model.Ingrediente, error)
+	GetAll(string, uint64, uint64) ([]model.Ingrediente, error)
 }
 
 // NewingredienteRepository -> retorna um novo ingrediente repository
@@ -72,7 +72,7 @@ func (i ingredienteRepository) Delete(id uint64) error {
 func (i ingredienteRepository) FindById(ingredienteID uint64, empresaID uint64) (ingrediente model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...FindById")
 
-	erro = i.DB.Where("id = ? and empresa_id= ? ", ingredienteID, empresaID).First(&ingrediente).Error
+	erro = i.DB.Joins("JOIN usuarios ON ingredientes.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("ingredientes.id = ?", ingredienteID).First(&ingrediente).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return ingrediente, nil
@@ -82,11 +82,18 @@ func (i ingredienteRepository) FindById(ingredienteID uint64, empresaID uint64) 
 }
 
 // GetAll -> busca todos os ingredientes no banco de dados que correspondem a descrição passada
-func (i ingredienteRepository) GetAll(descricao string, empresaID uint64) (ingredientes []model.Ingrediente, erro error) {
+func (i ingredienteRepository) GetAll(descricao string, empresaID uint64, usuarioID uint64) (ingredientes []model.Ingrediente, erro error) {
 	log.Print("[IngredienteRepository]...GetAll")
 
 	descricaoBusca := fmt.Sprintf("%%%s%%", descricao)
-	erro = i.DB.Where("descricao LIKE ? and empresa_id = ?", descricaoBusca, empresaID).Find(&ingredientes).Error
+
+	if usuarioID != 0 {
+		erro = i.DB.Where("descricao LIKE ? AND usuario_id = ?", descricaoBusca, usuarioID).Find(&ingredientes).Error
+	} else if empresaID != 0 {
+		erro = i.DB.Joins("JOIN usuarios ON ingredientes.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ?", descricaoBusca).Find(&ingredientes).Error
+	} else {
+		erro = i.DB.Where("descricao LIKE", descricaoBusca).Find(&ingredientes).Error
+	}
 
 	return ingredientes, erro
 }

@@ -1,8 +1,10 @@
 package service
 
 import (
+	"cookbook/src/constants"
 	"cookbook/src/model"
 	"cookbook/src/repository"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,10 +18,10 @@ type receitaService struct {
 type ReceitaService interface {
 	WithTrx(*gorm.DB) ReceitaService
 	Save(model.Receita) (model.Receita, error)
-	Update(model.Receita) (model.Receita, error)
-	Delete(uint64) error
+	Update(model.Receita, uint64) (model.Receita, error)
+	Delete(uint64, uint64) error
 	FindById(uint64, uint64) (model.Receita, error)
-	GetAll(model.Receita, uint64) ([]model.Receita, error)
+	GetAll(string, constants.Categoria, uint64, uint64) ([]model.Receita, error)
 }
 
 // NewReceitaService -> retorna um novo Receita service
@@ -44,10 +46,14 @@ func (r receitaService) Save(receita model.Receita) (model.Receita, error) {
 }
 
 // Update -> atualiza a receita e a retorna
-func (r receitaService) Update(receita model.Receita) (model.Receita, error) {
-	receitaBanco, erro := r.receitaRepository.FindById(receita.ID, receita.EmpresaID)
+func (r receitaService) Update(receita model.Receita, empresaID uint64) (model.Receita, error) {
+	receitaBanco, erro := r.receitaRepository.FindById(receita.ID, empresaID)
 	if erro != nil {
 		return model.Receita{}, erro
+	}
+
+	if receitaBanco.ID == 0 {
+		return model.Receita{}, errors.New("não é possível alterar esta receita")
 	}
 
 	receita.CriadoEm = receitaBanco.CriadoEm
@@ -57,7 +63,15 @@ func (r receitaService) Update(receita model.Receita) (model.Receita, error) {
 }
 
 // Delete -> exclui uma receita com o id passado
-func (r receitaService) Delete(id uint64) error {
+func (r receitaService) Delete(id uint64, empresaID uint64) error {
+	receitaBanco, erro := r.receitaRepository.FindById(id, empresaID)
+	if erro != nil {
+		return erro
+	}
+
+	if receitaBanco.ID == 0 {
+		return errors.New("não é possível deletar esta receita")
+	}
 	return r.receitaRepository.Delete(id)
 }
 
@@ -67,6 +81,6 @@ func (r receitaService) FindById(receitaID uint64, empresaID uint64) (model.Rece
 }
 
 // GetAll -> retorna todas as receitas cadastradas de acordo com os parâmetros passados
-func (r receitaService) GetAll(receita model.Receita, empresaID uint64) (receitas []model.Receita, erro error) {
-	return r.receitaRepository.GetAll(receita, empresaID)
+func (r receitaService) GetAll(descricao string, categoria constants.Categoria, empresaID uint64, usuarioID uint64) (receitas []model.Receita, erro error) {
+	return r.receitaRepository.GetAll(descricao, categoria, empresaID, usuarioID)
 }

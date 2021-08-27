@@ -6,7 +6,7 @@ Content-Type: application/json
     "nome" : "Doce Art",
     "usuarios" : [
         {
-            "email"  : "rafarcm@teste.com",
+            "email"  : "rafael@teste.com",
             "nome"   : "Rafael",
             "senha"  : "1234",
             "perfil" : 1

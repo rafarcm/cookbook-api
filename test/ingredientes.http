@@ -1,25 +1,53 @@
 # Cadastra um novo ingrediente (Açucar)
 POST http://localhost:8080/ingredientes
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
 
 {
-    "descricao": "Açucar",
-    "unidadeMedida": "kg",
-    "preco": 5.20,
-    "empresaId": 1 
+    "descricao"     : "Farinha",
+    "unidadeMedida" : "kg",
+    "preco"         : 3.10 
 }
 ###
 
 # Cadastra um novo ingrediente (Leite)
 POST http://localhost:8080/ingredientes
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
 
 {
     "descricao": "Leite",
     "unidadeMedida": "l",
-    "preco": 6.80,
-    "empresaId": 1 
+    "preco": 6.80
+}
+###
+
+# Busca todos os ingredientes
+GET http://localhost:8080/ingredientes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
+###
+
+# Busca os ingredientes de acordo com os parâmetros
+GET http://localhost:8080/ingredientes?descricao=le&usuarioId=1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
+###
+
+# Busca um ingrediente pelo ID
+GET http://localhost:8080/ingredientes/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
+###
+
+# Atualiza um ingrediente
+PUT http://localhost:8080/ingredientes/3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+
+{
+    "descricao"     : "Farinha de trigo",
+    "unidadeMedida" : "kg",
+    "preco"         : 3.10 
 }
 ###

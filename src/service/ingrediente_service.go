@@ -3,6 +3,7 @@ package service
 import (
 	"cookbook/src/model"
 	"cookbook/src/repository"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,10 +17,10 @@ type ingredienteService struct {
 type IngredienteService interface {
 	WithTrx(*gorm.DB) IngredienteService
 	Save(model.Ingrediente) (model.Ingrediente, error)
-	Update(model.Ingrediente) (model.Ingrediente, error)
-	Delete(uint64) error
+	Update(model.Ingrediente, uint64) (model.Ingrediente, error)
+	Delete(uint64, uint64) error
 	FindById(uint64, uint64) (model.Ingrediente, error)
-	GetAll(string, uint64) ([]model.Ingrediente, error)
+	GetAll(string, uint64, uint64) ([]model.Ingrediente, error)
 }
 
 // NewIngredienteService -> retorna um novo ingrediente service
@@ -44,20 +45,33 @@ func (i ingredienteService) Save(ingrediente model.Ingrediente) (model.Ingredien
 }
 
 // Update -> atualiza a descrição e unidade de medida do ingrediente e o retorna
-func (i ingredienteService) Update(ingrediente model.Ingrediente) (model.Ingrediente, error) {
-	ingredienteBanco, erro := i.ingredienteRepository.FindById(ingrediente.ID, ingrediente.EmpresaID)
+func (i ingredienteService) Update(ingrediente model.Ingrediente, empresaID uint64) (model.Ingrediente, error) {
+	ingredienteBanco, erro := i.ingredienteRepository.FindById(ingrediente.ID, empresaID)
 	if erro != nil {
 		return model.Ingrediente{}, erro
+	}
+
+	if ingredienteBanco.ID == 0 {
+		return model.Ingrediente{}, errors.New("não é possível alterar este utensílio")
 	}
 
 	ingrediente.CriadoEm = ingredienteBanco.CriadoEm
 	ingrediente.AtualizadoEm = time.Now()
 
-	return i.ingredienteRepository.Update(ingredienteBanco)
+	return i.ingredienteRepository.Update(ingrediente)
 }
 
 // Delete -> exclui um ingrediente com o id passado
-func (i ingredienteService) Delete(id uint64) error {
+func (i ingredienteService) Delete(id uint64, empresaID uint64) error {
+	ingredienteBanco, erro := i.ingredienteRepository.FindById(id, empresaID)
+	if erro != nil {
+		return erro
+	}
+
+	if ingredienteBanco.ID == 0 {
+		return errors.New("não é possível deletar este utensílio")
+	}
+
 	return i.ingredienteRepository.Delete(id)
 }
 
@@ -66,7 +80,7 @@ func (i ingredienteService) FindById(ingredienteID uint64, empresaID uint64) (mo
 	return i.ingredienteRepository.FindById(ingredienteID, empresaID)
 }
 
-// GetAll -> retorna todos os ingredientes cadastrados que contém a descrição desejada
-func (i ingredienteService) GetAll(descricao string, empresaID uint64) ([]model.Ingrediente, error) {
-	return i.ingredienteRepository.GetAll(descricao, empresaID)
+// GetAll -> retorna todos os ingredientes cadastrados que contém a descrição desejada, empresa ou usuário
+func (i ingredienteService) GetAll(descricao string, empresaID uint64, usuarioID uint64) ([]model.Ingrediente, error) {
+	return i.ingredienteRepository.GetAll(descricao, empresaID, usuarioID)
 }

@@ -100,7 +100,7 @@ var _ = Describe("OrderService", func() {
 
 			It("retorna o registro atualizado com sucesso sem erro", func() {
 				ingrediente.ID = ingredienteID
-				ingrediente, err = ingredienteService.Update(ingrediente)
+				ingrediente, err = ingredienteService.Update(ingrediente, 1)
 				Expect(err).To(BeNil())
 				Expect(ingrediente.ID).NotTo(BeNil())
 				Expect(ingrediente.Descricao).To(Equal(descricaoIngrediente))
@@ -120,7 +120,7 @@ var _ = Describe("OrderService", func() {
 
 			It("retorna erro de registro não encontrado", func() {
 				ingrediente.ID = ingredienteID
-				ingrediente, err = ingredienteService.Update(ingrediente)
+				ingrediente, err = ingredienteService.Update(ingrediente, 1)
 				Expect(err).To(Equal(gorm.ErrRecordNotFound))
 				Expect(ingrediente).To(Equal(model.Ingrediente{}))
 			})
@@ -139,7 +139,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("deleta o registro sem erro", func() {
-				err = ingredienteService.Delete(ingredienteID)
+				err = ingredienteService.Delete(ingredienteID, 1)
 				Expect(err).To(BeNil())
 			})
 		})
@@ -197,7 +197,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("não retorna nunhum ingrediente", func() {
-				ingredientes, err = ingredienteService.GetAll("", 1)
+				ingredientes, err = ingredienteService.GetAll("", 1, 0)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(0))
 			})
@@ -232,7 +232,7 @@ var _ = Describe("OrderService", func() {
 			})
 
 			It("retorna apenas os registros com a descrição passada", func() {
-				ingredientes, err = ingredienteService.GetAll(descricaoIngrediente, 1)
+				ingredientes, err = ingredienteService.GetAll(descricaoIngrediente, 1, 0)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(2))
 			})

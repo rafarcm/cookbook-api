@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"cookbook/src/constants"
 	"cookbook/src/model"
 	"errors"
 	"fmt"
@@ -20,7 +21,7 @@ type ReceitaRepository interface {
 	Update(model.Receita) (model.Receita, error)
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Receita, error)
-	GetAll(model.Receita, uint64) ([]model.Receita, error)
+	GetAll(string, constants.Categoria, uint64, uint64) ([]model.Receita, error)
 }
 
 // NewReceitaRepository -> retorna um novo receita repository
@@ -84,7 +85,7 @@ func (r receitaRepository) Delete(id uint64) error {
 func (r receitaRepository) FindById(receitaID uint64, empresaID uint64) (receita model.Receita, erro error) {
 	log.Print("[ReceitaRepository]...FindById")
 
-	erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("id = ? and empresa_id = ?", receitaID, empresaID).First(&receita).Error
+	erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("receita.id = ?", receitaID).First(&receita).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return receita, nil
@@ -94,15 +95,27 @@ func (r receitaRepository) FindById(receitaID uint64, empresaID uint64) (receita
 }
 
 // GetAll -> busca todos as receitas no banco de dados de acordo com os parâmetros passados
-func (r receitaRepository) GetAll(receita model.Receita, empresaID uint64) (receitas []model.Receita, erro error) {
+func (r receitaRepository) GetAll(descricao string, categoria constants.Categoria, empresaID uint64, usuarioID uint64) (receitas []model.Receita, erro error) {
 	log.Print("[ReceitaRepository]...GetAll")
 
-	descricaoBusca := fmt.Sprintf("%%%s%%", receita.Descricao)
+	descricaoBusca := fmt.Sprintf("%%%s%%", descricao)
 
-	if receita.Categoria != 0 {
-		erro = r.DB.Where("descricao LIKE ? and categoria = ? and empresa_id = ?", descricaoBusca, receita.Categoria, empresaID).Find(&receitas).Error
+	if categoria != 0 {
+		if usuarioID != 0 {
+			erro = r.DB.Where("descricao LIKE ? AND categoria = ? AND usuario_id = ?", descricaoBusca, categoria, usuarioID).Find(&receitas).Error
+		} else if empresaID != 0 {
+			erro = r.DB.Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
+		} else {
+			erro = r.DB.Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
+		}
 	} else {
-		erro = r.DB.Where("descricao LIKE ? and empresa_id = ?", descricaoBusca, empresaID).Find(&receitas).Error
+		if usuarioID != 0 {
+			erro = r.DB.Where("descricao LIKE ? AND usuario_id = ?", descricaoBusca, usuarioID).Find(&receitas).Error
+		} else if empresaID != 0 {
+			erro = r.DB.Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+		} else {
+			erro = r.DB.Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+		}
 	}
 	return receitas, erro
 }

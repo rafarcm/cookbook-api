@@ -1,21 +1,48 @@
 # Cadastra um novo utensílio (Fue)
 POST http://localhost:8080/utensilios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
 
 {
     "descricao": "Fue",
-    "empresaId": 1
+    "usuarioId": 1
 }
 ###
 
 # Cadastra um novo utensílio (Fue)
 POST http://localhost:8080/utensilios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
 
 {
-    "descricao": "Batedeira",
-    "empresaId": 1
+    "descricao": "Forma Redonda"
+}
+###
+
+# Busca os utensílios de acordo com os parâmetros
+GET http://localhost:8080/utensilios?descricao=Bat&usuarioId=1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA5OTk2NCwidXN1YXJpb0lkIjoxfQ.LSqgkID0jZ36CJB0_G4xrhYfWT-l9G0qgs5yk9IFoj0
+###
+
+# Busca os utensílios pelo ID
+GET http://localhost:8080/utensilios/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwNzQ1MSwidXN1YXJpb0lkIjoxfQ.iU3y8zHgTPl5UkyFw08pxnfnTCIbQlGzGSha61sSUoY
+###
+
+# Busca todos utensílios
+GET http://localhost:8080/utensilios
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjIsImV4cCI6MTYzMDEwMDk0MCwidXN1YXJpb0lkIjoyfQ.EC-_nl3eJfIjuUiLECOnf1RK3ualAh0ORvuObAcIVpA
+###
+
+# Atualiza um utensílio
+PUT http://localhost:8080/utensilios/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+
+{
+    "descricao": "Batedeira Planetária"
 }
 ###

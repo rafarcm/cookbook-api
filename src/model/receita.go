@@ -18,7 +18,7 @@ type Receita struct {
 	PrecoSugerido float64              `json:"precoSugerido,omitempty" gorm:"not null"`
 	Ingredientes  []IngredienteReceita `json:"ingredientes,omitempty" binding:"required" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Utensilios    []Utensilio          `json:"utensilios,omitempty" binding:"required" gorm:"many2many:receita_utensilios;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	EmpresaID     uint64               `json:"empresaId,omitempty" binding:"required" gorm:"not null"`
+	UsuarioID     uint64               `json:"usuarioId,omitempty" gorm:"not null"`
 	CriadoEm      time.Time            `json:"criadoEm" gorm:"not null"`
 	AtualizadoEm  time.Time            `json:"atualizadoEm" gorm:"not null"`
 }

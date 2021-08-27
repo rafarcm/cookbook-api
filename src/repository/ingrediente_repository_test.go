@@ -152,7 +152,7 @@ var _ = Describe("IngredienteRepository", func() {
 	Describe("GetAll", func() {
 		Describe("sem registros no banco de dados", func() {
 			It("não retorna nunhum ingrediente", func() {
-				ingredientes, err = ingredienteRepo.GetAll("TESTE_SEM_RETORNO", 1)
+				ingredientes, err = ingredienteRepo.GetAll("TESTE_SEM_RETORNO", 1, 0)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(0))
 			})
@@ -174,7 +174,7 @@ var _ = Describe("IngredienteRepository", func() {
 			})
 
 			It("retorna apenas os registros com a descrição passada", func() {
-				ingredientes, err = ingredienteRepo.GetAll(descricaoIngrediente, 1)
+				ingredientes, err = ingredienteRepo.GetAll(descricaoIngrediente, 1, 0)
 				Expect(err).To(BeNil())
 				Expect(len(ingredientes)).To(Equal(1))
 				Expect(ingredientes[0].Descricao).To(Equal(descricaoIngrediente))

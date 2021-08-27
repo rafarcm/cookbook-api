@@ -45,15 +45,12 @@ func (u utensilioController) AddUtensilio(c *gin.Context) {
 		return
 	}
 
-	_, empresaID, erro := authentication.ExtrairIDs(c)
+	usuarioID, _, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar utensílio: %s", erro.Error())})
 		return
 	}
-	if empresaID != utensilio.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível adicionar um utensílio para uma empresa que não a sua"})
-		return
-	}
+	utensilio.UsuarioID = usuarioID
 
 	utensilio, erro = u.utensilioService.WithTrx(txHandle).Save(utensilio)
 	if erro != nil {
@@ -82,18 +79,15 @@ func (u utensilioController) UpdateUtensilio(c *gin.Context) {
 		return
 	}
 
-	_, empresaID, erro := authentication.ExtrairIDs(c)
+	usuarioID, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar utensílio: %s", erro.Error())})
 		return
 	}
-	if empresaID != utensilio.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar um utensílio para uma empresa que não a sua"})
-		return
-	}
 
+	utensilio.UsuarioID = usuarioID
 	utensilio.ID = utensilioID
-	utensilio, erro = u.utensilioService.WithTrx(txHandle).Update(utensilio)
+	utensilio, erro = u.utensilioService.WithTrx(txHandle).Update(utensilio, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao atualizar utensílio: %s", erro.Error())})
 		return
@@ -116,20 +110,11 @@ func (u utensilioController) DeleteUtensilio(c *gin.Context) {
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao deletar utensílio: %s", erro.Error())})
-		return
-	}
-	utensilio, erro := u.utensilioService.FindById(utensilioID, empresaID)
-	if erro != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar utensílio: %s", erro.Error())})
-		return
-	}
-	if utensilio.ID == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar um utensílio para uma empresa que não a sua"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar utensílio: %s", erro.Error())})
 		return
 	}
 
-	erro = u.utensilioService.WithTrx(txHandle).Delete(utensilioID)
+	erro = u.utensilioService.WithTrx(txHandle).Delete(utensilioID, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar utensílio: %s", erro.Error())})
 		return
@@ -150,7 +135,7 @@ func (u utensilioController) FindUtensilioById(c *gin.Context) {
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar utensílio: %s", erro.Error())})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar utensílios: %s", erro.Error())})
 		return
 	}
 
@@ -167,7 +152,18 @@ func (u utensilioController) FindUtensilioById(c *gin.Context) {
 func (u utensilioController) GetAllUtensilios(c *gin.Context) {
 	log.Print("[utensilioController]...Buscando todos os utensilios")
 
+	var usuarioID uint64 = 0
+	var erro error
+
 	descricao := c.Query("descricao")
+
+	if c.Query("usuarioId") != "" {
+		usuarioID, erro = strconv.ParseUint(c.Query("usuarioId"), 10, 64)
+		if erro != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao buscar utensílios: %s", erro.Error())})
+			return
+		}
+	}
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
@@ -175,7 +171,7 @@ func (u utensilioController) GetAllUtensilios(c *gin.Context) {
 		return
 	}
 
-	utensilios, erro := u.utensilioService.GetAll(descricao, empresaID)
+	utensilios, erro := u.utensilioService.GetAll(descricao, empresaID, usuarioID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar utensilios: %s", erro.Error())})
 		return

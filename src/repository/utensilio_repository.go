@@ -20,7 +20,7 @@ type UtensilioRepository interface {
 	Update(model.Utensilio) (model.Utensilio, error)
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Utensilio, error)
-	GetAll(string, uint64) ([]model.Utensilio, error)
+	GetAll(string, uint64, uint64) ([]model.Utensilio, error)
 }
 
 // NewUtensilioRepository -> retorna um novo Utensilio repository
@@ -72,7 +72,7 @@ func (u utensilioRepository) Delete(id uint64) error {
 func (u utensilioRepository) FindById(utensilioID uint64, empresaID uint64) (Utensilio model.Utensilio, erro error) {
 	log.Print("[UtensilioRepository]...FindById")
 
-	erro = u.DB.Where("id = ? and empresa_id", utensilioID, empresaID).First(&Utensilio).Error
+	erro = u.DB.Joins("JOIN usuarios ON utensilios.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("utensilios.id = ?", utensilioID).First(&Utensilio).Error
 
 	if erro != nil && errors.Is(erro, gorm.ErrRecordNotFound) {
 		return Utensilio, nil
@@ -82,11 +82,17 @@ func (u utensilioRepository) FindById(utensilioID uint64, empresaID uint64) (Ute
 }
 
 // GetAll -> busca os Utensilio no banco de dados que correspondem a descrição passada
-func (u utensilioRepository) GetAll(descricao string, empresaID uint64) (Utensilios []model.Utensilio, erro error) {
+func (u utensilioRepository) GetAll(descricao string, empresaID uint64, usuarioID uint64) (utensilios []model.Utensilio, erro error) {
 	log.Print("[UtensilioRepository]...GetAll")
 
 	descricaoBusca := fmt.Sprintf("%%%s%%", descricao)
-	erro = u.DB.Where("descricao LIKE ? and empresa_id = ?", descricaoBusca, empresaID).Find(&Utensilios).Error
+	if usuarioID != 0 {
+		erro = u.DB.Where("descricao LIKE ? AND usuario_id = ?", descricaoBusca, usuarioID).Find(&utensilios).Error
+	} else if empresaID != 0 {
+		erro = u.DB.Joins("JOIN usuarios ON utensilios.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ?", descricaoBusca).Find(&utensilios).Error
+	} else {
+		erro = u.DB.Where("descricao LIKE", descricaoBusca).Find(&utensilios).Error
+	}
 
-	return Utensilios, erro
+	return utensilios, erro
 }

@@ -45,15 +45,12 @@ func (i ingredienteController) AddIngrediente(c *gin.Context) {
 		return
 	}
 
-	_, empresaID, erro := authentication.ExtrairIDs(c)
+	usuarioID, _, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar ingrediente: %s", erro.Error())})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao adicionar utensílio: %s", erro.Error())})
 		return
 	}
-	if empresaID != ingrediente.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível adicionar um ingrediente para uma empresa que não a sua"})
-		return
-	}
+	ingrediente.UsuarioID = usuarioID
 
 	ingrediente, erro = i.ingredienteService.WithTrx(txHandle).Save(ingrediente)
 	if erro != nil {
@@ -82,18 +79,15 @@ func (i ingredienteController) UpdateIngrediente(c *gin.Context) {
 		return
 	}
 
-	_, empresaID, erro := authentication.ExtrairIDs(c)
+	usuarioID, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar ingrediente: %s", erro.Error())})
 		return
 	}
-	if empresaID != ingrediente.EmpresaID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar um ingrediente para uma empresa que não a sua"})
-		return
-	}
 
+	ingrediente.UsuarioID = usuarioID
 	ingrediente.ID = ingredienteID
-	ingrediente, erro = i.ingredienteService.WithTrx(txHandle).Update(ingrediente)
+	ingrediente, erro = i.ingredienteService.WithTrx(txHandle).Update(ingrediente, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao atualizar ingrediente: %s", erro.Error())})
 		return
@@ -116,21 +110,11 @@ func (i ingredienteController) DeleteIngrediente(c *gin.Context) {
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao deletar ingrediente: %s", erro.Error())})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar ingrediente: %s", erro.Error())})
 		return
 	}
 
-	ingrediente, erro := i.ingredienteService.FindById(ingredienteID, empresaID)
-	if erro != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar ingrediente: %s", erro.Error())})
-		return
-	}
-	if ingrediente.ID == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível deletar um ingrediente para uma empresa que não a sua"})
-		return
-	}
-
-	erro = i.ingredienteService.WithTrx(txHandle).Delete(ingredienteID)
+	erro = i.ingredienteService.WithTrx(txHandle).Delete(ingredienteID, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar ingrediente: %s", erro.Error())})
 		return
@@ -151,7 +135,7 @@ func (i ingredienteController) FindIngredienteById(c *gin.Context) {
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar ingrediente: %s", erro.Error())})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao buscar utensílios: %s", erro.Error())})
 		return
 	}
 
@@ -168,7 +152,18 @@ func (i ingredienteController) FindIngredienteById(c *gin.Context) {
 func (i ingredienteController) GetAllIngredientes(c *gin.Context) {
 	log.Print("[IngredienteController]...Buscando todos os ingredientes")
 
+	var usuarioID uint64 = 0
+	var erro error
+
 	descricao := c.Query("descricao")
+
+	if c.Query("usuarioId") != "" {
+		usuarioID, erro = strconv.ParseUint(c.Query("usuarioId"), 10, 64)
+		if erro != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao buscar ingredientes: %s", erro.Error())})
+			return
+		}
+	}
 
 	_, empresaID, erro := authentication.ExtrairIDs(c)
 	if erro != nil {
@@ -176,7 +171,7 @@ func (i ingredienteController) GetAllIngredientes(c *gin.Context) {
 		return
 	}
 
-	ingredientes, erro := i.ingredienteService.GetAll(descricao, empresaID)
+	ingredientes, erro := i.ingredienteService.GetAll(descricao, empresaID, usuarioID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar ingredientes: %s", erro.Error())})
 		return

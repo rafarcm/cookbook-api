@@ -66,9 +66,9 @@ func (mr *MockIngredienteRepositoryMockRecorder) FindById(arg0 interface{}) *gom
 }
 
 // GetAll mocks base method.
-func (m *MockIngredienteRepository) GetAll(arg0 string, arg1 uint64) ([]model.Ingrediente, error) {
+func (m *MockIngredienteRepository) GetAll(arg0 string, arg1 uint64, arg2 uint64) ([]model.Ingrediente, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]model.Ingrediente)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1

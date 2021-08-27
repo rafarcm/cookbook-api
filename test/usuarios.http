@@ -1,9 +1,9 @@
+# Cadastra um novo usuário
 POST http://localhost:8080/usuarios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
 
 {
-    "empresaId": 1,
     "email"  : "mel@teste.com",
     "nome"   : "Mel",
     "senha"  : "1234",
@@ -14,17 +14,35 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 # Busca os usuários
 GET http://localhost:8080/usuarios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
 ###
 
 # Busca um usuário por id
-GET http://localhost:8080/usuarios/2
+GET http://localhost:8080/usuarios/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
 ###
 
 # Busca os usuários por nome
-GET http://localhost:8080/usuarios?nome=el
+GET http://localhost:8080/usuarios?nome=mel
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDA0MjAwOSwidXN1YXJpb0lkIjoxfQ.kAewr0rm1czFFzuOFRemTmE-b8OkbqwqfHEMYg9o850
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+###
+
+# Atualiza um usuário
+PUT http://localhost:8080/usuarios/4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+
+{
+    "email"  : "mel@teste.com",
+    "nome"   : "Melzinha",
+    "perfil" : 2
+}
+###
+
+# Deleta um usuário
+DELETE http://localhost:8080/usuarios/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExMjQ4OCwidXN1YXJpb0lkIjo0fQ.vcAdPvuSSrgdN-zKM-jQB-7whdwA13pdgHPEXJ2GkGo
 ###
