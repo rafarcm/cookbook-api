@@ -28,13 +28,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 # Busca os utensílios pelo ID
 GET http://localhost:8080/utensilios/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwNzQ1MSwidXN1YXJpb0lkIjoxfQ.iU3y8zHgTPl5UkyFw08pxnfnTCIbQlGzGSha61sSUoY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExNDQ1MywidXN1YXJpb0lkIjoxfQ.at_WNKe0n2SGP1MSkdMF8r5eSN_h_CtbRk1yl3-RR3k
 ###
 
 # Busca todos utensílios
 GET http://localhost:8080/utensilios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjIsImV4cCI6MTYzMDEwMDk0MCwidXN1YXJpb0lkIjoyfQ.EC-_nl3eJfIjuUiLECOnf1RK3ualAh0ORvuObAcIVpA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExNDQ1MywidXN1YXJpb0lkIjoxfQ.at_WNKe0n2SGP1MSkdMF8r5eSN_h_CtbRk1yl3-RR3k
 ###
 
 # Atualiza um utensílio

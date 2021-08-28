@@ -22,6 +22,7 @@ type usuarioController struct {
 type UsuarioController interface {
 	AddUsuario(*gin.Context)
 	UpdateUsuario(*gin.Context)
+	UpdateSenhaUsuario(*gin.Context)
 	DeleteUsuario(*gin.Context)
 	FindUsuarioById(*gin.Context)
 	GetAllUsuarios(c *gin.Context)
@@ -34,7 +35,7 @@ func NewUsuarioController(r service.UsuarioService) UsuarioController {
 	}
 }
 
-// AddUsuario: adiciona uma nova Usuario
+// AddUsuario: adiciona uma nova usuário
 func (u usuarioController) AddUsuario(c *gin.Context) {
 	log.Print("[UsuarioController]...Adicionando usuário")
 
@@ -70,7 +71,7 @@ func (u usuarioController) AddUsuario(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": usuario})
 }
 
-// UpdateUsuario : atualiza a Usuario pelo seu id
+// UpdateUsuario : atualiza a usuário pelo seu id
 func (u usuarioController) UpdateUsuario(c *gin.Context) {
 	log.Print("[UsuarioController]...Atualizando usuário")
 
@@ -117,7 +118,44 @@ func (u usuarioController) UpdateUsuario(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": usuario})
 }
 
-// DeleteUsuario : deleta a Usuario pelo seu id
+// UpdateSenhaUsuario : atualiza a senha de um usuário pelo seu id
+func (u usuarioController) UpdateSenhaUsuario(c *gin.Context) {
+	log.Print("[UsuarioController]...Atualizando senha do usuário")
+
+	txHandle := c.MustGet("db_trx").(*gorm.DB)
+
+	usuarioID, erro := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+	if erro != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao atualizar a senha do usuário: %s", erro.Error())})
+		return
+	}
+
+	var senha model.Senha
+	if erro := c.ShouldBindJSON(&senha); erro != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Erro ao atualizar a senha do usuário: %s", erro.Error())})
+		return
+	}
+
+	usuarioTokenID, empresaID, erro := authentication.ExtrairIDs(c)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar a senha do usuário: %s", erro.Error())})
+		return
+	}
+	if usuarioID != usuarioTokenID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Não é possível atualizar a senha de um usuário que não o seu"})
+		return
+	}
+
+	erro = u.usuarioService.WithTrx(txHandle).UpdateSenha(usuarioID, empresaID, senha.Atual, senha.Nova)
+	if erro != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao atualizar usuário: %s", erro.Error())})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}
+
+// DeleteUsuario : deleta a usuário pelo seu id
 func (u usuarioController) DeleteUsuario(c *gin.Context) {
 	log.Print("[UsuarioController]...Deletando usuário")
 
@@ -155,7 +193,7 @@ func (u usuarioController) DeleteUsuario(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
-// FindUsuarioById : busca a Usuario pelo seu id
+// FindUsuarioById : busca a usuário pelo seu id
 func (u usuarioController) FindUsuarioById(c *gin.Context) {
 	log.Print("[UsuarioController]...Buscando usuário por id")
 
@@ -181,7 +219,7 @@ func (u usuarioController) FindUsuarioById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": usuario})
 }
 
-// UsuarioController : busca todas as Usuarios de acordo com os parâmetros passados
+// UsuarioController : busca todas as usuários de acordo com os parâmetros passados
 func (u usuarioController) GetAllUsuarios(c *gin.Context) {
 	log.Print("[UsuarioController]...Buscando todas as usuários")
 

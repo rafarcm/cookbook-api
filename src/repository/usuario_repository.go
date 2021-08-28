@@ -18,6 +18,7 @@ type UsuarioRepository interface {
 	WithTrx(*gorm.DB) UsuarioRepository
 	Save(model.Usuario) (model.Usuario, error)
 	Update(model.Usuario) (model.Usuario, error)
+	UpdateSenha(uint64, string) error
 	Delete(uint64) error
 	FindById(uint64, uint64) (model.Usuario, error)
 	FindByEmail(string) (model.Usuario, error)
@@ -58,6 +59,15 @@ func (u usuarioRepository) Update(usuario model.Usuario) (model.Usuario, error) 
 	erro := u.DB.Save(&usuario).Error
 
 	return usuario, erro
+}
+
+// UpdateSenha : atualiza a senha de um usuario no banco de dados
+func (u usuarioRepository) UpdateSenha(id uint64, senha string) error {
+	log.Print("[usuarioRepository]...UpdateSenha")
+
+	erro := u.DB.Model(model.Usuario{}).Where("id = ?", id).Update("senha", senha).Error
+
+	return erro
 }
 
 // Delete : deleta um usuario no banco de dados

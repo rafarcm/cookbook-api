@@ -20,6 +20,7 @@ func GetUsuarioRoute(db *gorm.DB, httpRouter *gin.Engine) *gin.Engine {
 	usuarios := httpRouter.Group("usuarios")
 
 	usuarios.POST("/", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), usuarioController.AddUsuario)
+	usuarios.POST("/:id/atualizar-senha", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), usuarioController.UpdateSenhaUsuario)
 	usuarios.PUT("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), usuarioController.UpdateUsuario)
 	usuarios.DELETE("/:id", middleware.Autenticar(), middleware.DBTransactionMiddleware(db), usuarioController.DeleteUsuario)
 	usuarios.GET("/:id", middleware.Autenticar(), usuarioController.FindUsuarioById)

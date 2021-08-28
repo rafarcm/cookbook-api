@@ -1,7 +1,7 @@
 # Cadastra um novo usuário
 POST http://localhost:8080/usuarios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDE5ODE4OSwidXN1YXJpb0lkIjoxfQ.ZmuPzrRlBbZFuL2lY0ADFZnK2cCwZ0GL_JfaOwCENxY
 
 {
     "email"  : "mel@teste.com",
@@ -45,4 +45,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 DELETE http://localhost:8080/usuarios/1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExMjQ4OCwidXN1YXJpb0lkIjo0fQ.vcAdPvuSSrgdN-zKM-jQB-7whdwA13pdgHPEXJ2GkGo
+###
+
+# Atualiza a senha de um usuário
+POST http://localhost:8080/usuarios/4/atualizar-senha
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDE5OTk2NSwidXN1YXJpb0lkIjo0fQ.0zVWMvkpizg1JheJ1wjOA7tdh8X3ALl3iaMxHZrWMLw
+
+{
+    "atual"  : "1234",
+    "nova"   : "12345"
+}
 ###
