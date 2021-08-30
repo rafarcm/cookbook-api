@@ -69,7 +69,7 @@ func (u utensilioService) Delete(utensilioID uint64, empresaID uint64) error {
 		return erro
 	}
 
-	if utensilioBanco.ID != 0 {
+	if utensilioBanco.ID == 0 {
 		return errors.New("não é possível deletar este utensílio")
 	}
 

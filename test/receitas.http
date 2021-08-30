@@ -37,13 +37,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 # Busca todas as receitas
 GET http://localhost:8080/receitas
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDIwMDI1NywidXN1YXJpb0lkIjo0fQ.CZH0fZhGppXaC5-DHeCKnd5vp6VFOUuS_Ct0TPOdRBs
 ###
 
 # Busca uma receita pelo ID
 GET http://localhost:8080/receitas/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDEwOTUxOSwidXN1YXJpb0lkIjoxfQ.lH_gd8pB6_-2DfZ9uO2tDdgbLv3eReE695JKTSyRSFI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDIwMDI1NywidXN1YXJpb0lkIjo0fQ.CZH0fZhGppXaC5-DHeCKnd5vp6VFOUuS_Ct0TPOdRBs
 ###
 
 # Busca as receita de acordo com os parâmetros

@@ -28,14 +28,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 # Busca os utensílios pelo ID
 GET http://localhost:8080/utensilios/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExNDQ1MywidXN1YXJpb0lkIjoxfQ.at_WNKe0n2SGP1MSkdMF8r5eSN_h_CtbRk1yl3-RR3k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDM4MjMyOSwidXN1YXJpb0lkIjoxfQ.gJ6zc9PzzpfRp2_SseQ5ODhC_1Pkft2L2U8cLm6d5b0
 ###
 
 # Busca todos utensílios
 GET http://localhost:8080/utensilios
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDExNDQ1MywidXN1YXJpb0lkIjoxfQ.at_WNKe0n2SGP1MSkdMF8r5eSN_h_CtbRk1yl3-RR3k
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDM4MjMyOSwidXN1YXJpb0lkIjoxfQ.gJ6zc9PzzpfRp2_SseQ5ODhC_1Pkft2L2U8cLm6d5b0
 
 # Atualiza um utensílio
 PUT http://localhost:8080/utensilios/2
@@ -45,4 +44,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0c
 {
     "descricao": "Batedeira Planetária"
 }
+###
+
+# Deleta um utensílio
+DELETE http://localhost:8080/utensilios/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbXByZXNhSWQiOjEsImV4cCI6MTYzMDM4MjMyOSwidXN1YXJpb0lkIjoxfQ.gJ6zc9PzzpfRp2_SseQ5ODhC_1Pkft2L2U8cLm6d5b0
 ###

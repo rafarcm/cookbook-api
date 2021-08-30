@@ -58,6 +58,8 @@ func (u utensilioController) AddUtensilio(c *gin.Context) {
 		return
 	}
 
+	utensilio.AddLinks(c.Request.Host, model.UtensilioAddRel)
+
 	c.JSON(http.StatusCreated, gin.H{"data": utensilio})
 }
 
@@ -93,6 +95,7 @@ func (u utensilioController) UpdateUtensilio(c *gin.Context) {
 		return
 	}
 
+	utensilio.AddLinks(c.Request.Host, model.UtensilioUpdateRel)
 	c.JSON(http.StatusOK, gin.H{"data": utensilio})
 }
 
@@ -114,13 +117,21 @@ func (u utensilioController) DeleteUtensilio(c *gin.Context) {
 		return
 	}
 
+	utensilio, erro := u.utensilioService.FindById(utensilioID, empresaID)
+	if erro != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Erro ao atualizar utensílio: %s", erro.Error())})
+		return
+	}
+
 	erro = u.utensilioService.WithTrx(txHandle).Delete(utensilioID, empresaID)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao deletar utensílio: %s", erro.Error())})
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	utensilio.AddLinks(c.Request.Host, model.UtensilioDeleteRel)
+
+	c.JSON(http.StatusOK, gin.H{"data": utensilio})
 }
 
 // FindUtensilioById : busca a Utensilio pelo seu id
@@ -144,6 +155,7 @@ func (u utensilioController) FindUtensilioById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar utensílio: %s", erro.Error())})
 		return
 	}
+	utensilio.AddLinks(c.Request.Host, model.UtensilioGetByIdRel)
 
 	c.JSON(http.StatusOK, gin.H{"data": utensilio})
 }
@@ -175,6 +187,10 @@ func (u utensilioController) GetAllUtensilios(c *gin.Context) {
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao buscar utensilios: %s", erro.Error())})
 		return
+	}
+
+	for i := range utensilios {
+		utensilios[i].AddLinks(c.Request.Host, model.UtensilioGetAllRel)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": utensilios})

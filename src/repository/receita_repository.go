@@ -102,19 +102,19 @@ func (r receitaRepository) GetAll(descricao string, categoria constants.Categori
 
 	if categoria != 0 {
 		if usuarioID != 0 {
-			erro = r.DB.Where("descricao LIKE ? AND categoria = ? AND usuario_id = ?", descricaoBusca, categoria, usuarioID).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("descricao LIKE ? AND categoria = ? AND usuario_id = ?", descricaoBusca, categoria, usuarioID).Find(&receitas).Error
 		} else if empresaID != 0 {
-			erro = r.DB.Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
 		} else {
-			erro = r.DB.Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("descricao LIKE ? AND categoria = ?", descricaoBusca, categoria).Find(&receitas).Error
 		}
 	} else {
 		if usuarioID != 0 {
-			erro = r.DB.Where("descricao LIKE ? AND usuario_id = ?", descricaoBusca, usuarioID).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("descricao LIKE ? AND usuario_id = ?", descricaoBusca, usuarioID).Find(&receitas).Error
 		} else if empresaID != 0 {
-			erro = r.DB.Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Joins("JOIN usuarios ON receita.usuario_id = usuarios.id AND usuarios.empresa_id = ?", empresaID).Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
 		} else {
-			erro = r.DB.Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
+			erro = r.DB.Preload("Ingredientes").Preload("Utensilios").Where("descricao LIKE ?", descricaoBusca).Find(&receitas).Error
 		}
 	}
 	return receitas, erro
